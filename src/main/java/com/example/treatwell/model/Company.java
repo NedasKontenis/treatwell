@@ -1,0 +1,16 @@
+package com.example.treatwell.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "companies")
+public class Company {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    // Getters and Setters
+}
