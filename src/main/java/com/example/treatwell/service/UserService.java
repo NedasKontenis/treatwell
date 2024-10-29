@@ -13,6 +13,26 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public void registerUser(String email, String password, String role) {
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email is already in use");
+        }
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password); // Encrypt password
+        user.setRole(role);
+        userRepository.save(user);
+    }
+
+
+    public boolean authenticate(String email, String password) {
+        User user = userRepository.findByEmail(email);
+        if (user != null && user.getPassword().equals(password)) {
+            return true;
+        }
+        return false;
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

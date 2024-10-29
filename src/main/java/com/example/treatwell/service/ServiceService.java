@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Service
+@org.springframework.stereotype.Service
 public class ServiceService {
     @Autowired
     private ServiceRepository serviceRepository;

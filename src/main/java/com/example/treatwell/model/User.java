@@ -22,8 +22,11 @@ public class User {
     String login;
     String password;
     LocalDate birthDate;
+    String role;
     String name;
     String surname;
+    @Column(unique = true)
+    String email;
     //@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     //@LazyCollection(LazyCollectionOption.FALSE)
     //List<Service> myServices;
@@ -34,6 +37,13 @@ public class User {
         this.birthDate = birthDate;
         this.name = name;
         this.surname = surname;
+    }
+
+    public User(int id, String email, String password, String role) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
     public User(int id, String login, String password, LocalDate birthDate) {

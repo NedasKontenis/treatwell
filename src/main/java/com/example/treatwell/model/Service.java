@@ -1,7 +1,10 @@
 package com.example.treatwell.model;
 
 import jakarta.persistence.*;
-
+import lombok.Getter;
+import lombok.Setter;
+@Setter
+@Getter
 @Entity
 @Table(name = "services")
 public class Service {
@@ -9,11 +12,20 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @Getter
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Setter
+    @Getter
     @Column(name = "description", nullable = false)
     private String description;
+
+    @Setter
+    @Getter
+    @Column(name = "imageUrl", nullable = false)
+    private String imageUrl; // URL to the uploaded image
 
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)

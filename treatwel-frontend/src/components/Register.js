@@ -8,16 +8,19 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('Client'); // Role selection
+    const [companyName, setCompanyName] = useState('');
+    const [companyAddress, setCompanyAddress] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await registerUser({ email, password, role });
+             await registerUser( { email, password, role }, {headers: { 'Content-Type': 'application/json' } });
             alert('Registration successful!');
             navigate(role === 'Company Representative' ? '/dashboard' : '/main'); // Navigate based on role
         } catch (error) {
-            alert('Registration failed');
+            console.error("Registration error:", error.response ? error.response.data : error.message);
+            alert("Registration failed");
         }
     };
 

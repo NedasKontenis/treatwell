@@ -9,6 +9,21 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+
+    // const handleLogin = async () => {
+    //     try {
+    //         const response = await axios.post('http://10.0.2.2:8080/auth/login', { email, password });
+    //         console.log('Response data:', response.data); // Check response in console
+    //         if (response.status === 200) {
+    //             navigate('/main');
+    //         } else {
+    //             alert('Login failed: Check your credentials.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error:', error.response ? error.response.data : error.message);
+    //         alert('Login failed. Please check the console for more details.');
+    //     }
+    // };
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
