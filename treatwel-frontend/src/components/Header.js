@@ -10,6 +10,11 @@ function Header() {
         // Perform any login logic here if needed
         navigate('/login'); // Redirect to home page or any other page
     };
+
+    const handleBusiness = () => {
+        // Perform any login logic here if needed
+        navigate('/Dashboard'); // Redirect to home page or any other page
+    };
     return (
 
 
@@ -24,7 +29,7 @@ function Header() {
                 <a href="#kuno">Kūno</a>
             </nav>
             <div className="auth-links">
-                <a href="#tavo-versliui">Tavo Verslui</a>
+                <button onClick={handleBusiness}>Tavo Verslui</button>
                 <button onClick={handleLogin}>Prisijungti</button>
             </div>
         </header>

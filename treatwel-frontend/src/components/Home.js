@@ -12,7 +12,6 @@ const Home = () => {
                     <Header />
                     <SearchBar />
                     <ServiceCategories />
-                    <img src="logo.png" alt="Logo" className="logo"/>
                 </div>
             </header>
         </div>
