@@ -1,0 +1,25 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.logo {
+    width: 150px;
+}
+
+.navigation a {
+    margin: 0 15px;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-links a {
+    margin-left: 20px;
+    color: #FF5A5F;
+    text-decoration: none;
+    font-weight: bold;
+}

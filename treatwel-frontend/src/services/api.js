@@ -8,18 +8,11 @@ const api = axios.create({
 export const loginUser = (userData) => api.post('/users/login', userData);
 export const searchServices = (query) => api.get(`/services?search=${query}`);
 export const makeReservation = (reservationData) => api.post('/reservations', reservationData);
+export const getAllServices = () => api.get(`/api/services`);
+export const registerUser = async (userData) => api.post('/users/register', userData);
 
-export const registerUser = async (userData) => {
-    // Assuming backend endpoint for registration
-    await axios.post('/users/register', userData);
-};
+export const createCompany = async (companyData) => api.post('/api/companies', companyData);
 
-export const createCompany = async (companyData) => {
-    await axios.post('/api/companies', companyData);
-};
-
-export const createService = async (serviceData) => {
-    await axios.post('/api/services', serviceData);
-};
+export const createService = async (serviceData) => api.post('/api/services', serviceData);
 
 export default api;

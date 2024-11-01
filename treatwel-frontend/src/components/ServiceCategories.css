@@ -1,0 +1,22 @@
+.service-categories {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.category {
+    margin: 0 20px;
+}
+
+.category img {
+    width: 50px;
+}
+
+.category h3 {
+    color: #333;
+}
+
+.category p {
+    color: #666;
+}

@@ -6,19 +6,15 @@ import Register from './components/Register';
 import MainPage from './components/MainPage';
 import Dashboard from './components/Dashboard';
 
+import Home from "./components/Home";
 const App = () => {
     return (
 
     <div className="app">
-        <header className="app-header">
-            <div className="logo-container">
-                <img src="logo.png" alt="Logo" className="logo"/>
-            </div>
-            <h1 className="app-title">Service Reservation System</h1>
-        </header>
-        {     <Router>
+        {  <Router>
             <Routes>
-                <Route path="/" element={<Login/>}/>
+                <Route path="/" element={<Home/>}/>
+                <Route path="/login" element={<Login/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/main" element={<MainPage/>}/>
                 <Route path="/dashboard" element={<Dashboard/>}/> {/* Dashboard for representatives */}
