@@ -11,13 +11,18 @@ const MainPage = () => {
         const fetchServices = async () => {
             try {
                 const response = await getAllServices();
-                const data = await response.json();
 
-                // Debugging step: Check what `data` looks like
-                console.log("Fetched data:", data);
+                // Debugging step: Check what `response` looks like
+                console.log("Fetched response:", response);
 
-                // Ensure data is an array before setting it
-                setServices(Array.isArray(data) ? data : []);
+                // Access services from the data property
+                if (response && Array.isArray(response.data)) {
+                    setServices(response.data); // Set the services directly from response.data
+                    console.log("Services set:", response.data);
+                } else {
+                    console.warn("Services not found in response:", response);
+                    setServices([]); // Set services to an empty array if not found
+                }
             } catch (error) {
                 console.error("Error fetching services:", error);
             }
@@ -25,6 +30,9 @@ const MainPage = () => {
 
         fetchServices();
     }, []);
+
+    // Debugging: Check the number of services
+    console.log("Number of services:", services.length);
 
     return (
         <div className="main-page">
@@ -34,7 +42,7 @@ const MainPage = () => {
                     services.map((service) => (
                         <div className="service-card" key={service.id}>
                             <h3>{service.name}</h3>
-                            <p>{service.companyName}</p>
+                            <p>{service.description}</p>
                             <button>Register & Reserve Time</button>
                         </div>
                     ))
@@ -45,5 +53,4 @@ const MainPage = () => {
         </div>
     );
 };
-
 export default MainPage;
