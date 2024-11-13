@@ -1,8 +1,7 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Use material ui components, no need to custom style components
+- Use material icons for icons if needed
+- Zustand for global state - https://zustand.docs.pmnd.rs/getting-started/introduction
+- Use react hook form hooks for inputs and validation - https://react-hook-form.com/docs
+- TanStack Query for data fetching - https://tanstack.com/query/latest/docs/framework/react/overview
