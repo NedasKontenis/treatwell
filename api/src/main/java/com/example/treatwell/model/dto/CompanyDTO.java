@@ -1,9 +1,12 @@
 package com.example.treatwell.model.dto;
 
+import com.example.treatwell.model.WorkingHours;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -18,4 +21,6 @@ public class CompanyDTO {
     private String phoneNumber;
     private String email;
     private Long ownerId;
+    private String logoUrl;
+    private List<WorkingHours> workingHours;
 }

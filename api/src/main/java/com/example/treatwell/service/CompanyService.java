@@ -30,6 +30,8 @@ public class CompanyService {
                 .email(companyDTO.getEmail())
                 .owner(owner)
                 .isActive(true)
+                .logoUrl(companyDTO.getLogoUrl())
+                .workingHours(companyDTO.getWorkingHours())
                 .build();
 
         return mapToDTO(companyRepository.save(company));
@@ -51,6 +53,8 @@ public class CompanyService {
                 .phoneNumber(company.getPhoneNumber())
                 .email(company.getEmail())
                 .ownerId(company.getOwner().getId())
+                .logoUrl(company.getLogoUrl())
+                .workingHours(company.getWorkingHours())
                 .build();
     }
 }

@@ -30,6 +30,13 @@ public class Company {
     private String email;
     private boolean isActive = true;
 
+    @Column(name = "logo_url")
+    private String logoUrl;
+
+    @ElementCollection
+    @CollectionTable(name = "company_working_hours", joinColumns = @JoinColumn(name = "company_id"))
+    private List<WorkingHours> workingHours;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;

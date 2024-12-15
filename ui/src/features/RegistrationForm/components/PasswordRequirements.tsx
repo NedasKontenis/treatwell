@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { getRequirementLabel, passwordChecks } from '../utils.js';
+import { getRequirementLabel, passwordChecks } from '../utils.ts';
 
 export const PasswordRequirements = ({ password }) => {
   const checks = passwordChecks(password);
