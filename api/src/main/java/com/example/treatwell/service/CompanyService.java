@@ -87,4 +87,10 @@ public class CompanyService {
         Company updatedCompany = companyRepository.save(company);
         return companyMapper.toDTO(updatedCompany);
     }
+
+    public CompanyDTO getCompany(Long id) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + id));
+        return companyMapper.toDTO(company);
+    }
 }
