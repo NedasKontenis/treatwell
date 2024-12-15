@@ -22,6 +22,9 @@ const LoginLazyImport = createFileRoute('/login')()
 const CreateNewCompanyLazyImport = createFileRoute('/create-new-company')()
 const CompaniesLazyImport = createFileRoute('/companies')()
 const IndexLazyImport = createFileRoute('/')()
+const CompanyDetailsCompanyIdLazyImport = createFileRoute(
+  '/company-details/$companyId',
+)()
 
 // Create/Update Routes
 
@@ -64,6 +67,15 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const CompanyDetailsCompanyIdLazyRoute =
+  CompanyDetailsCompanyIdLazyImport.update({
+    id: '/company-details/$companyId',
+    path: '/company-details/$companyId',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/company-details/$companyId.lazy').then((d) => d.Route),
+  )
 
 // Populate the FileRoutesByPath interface
 
@@ -111,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterLazyImport
       parentRoute: typeof rootRoute
     }
+    '/company-details/$companyId': {
+      id: '/company-details/$companyId'
+      path: '/company-details/$companyId'
+      fullPath: '/company-details/$companyId'
+      preLoaderRoute: typeof CompanyDetailsCompanyIdLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -123,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
+  '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -132,6 +152,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
+  '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
 }
 
 export interface FileRoutesById {
@@ -142,6 +163,7 @@ export interface FileRoutesById {
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
+  '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -153,6 +175,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-companies'
     | '/register'
+    | '/company-details/$companyId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -161,6 +184,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-companies'
     | '/register'
+    | '/company-details/$companyId'
   id:
     | '__root__'
     | '/'
@@ -169,6 +193,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-companies'
     | '/register'
+    | '/company-details/$companyId'
   fileRoutesById: FileRoutesById
 }
 
@@ -179,6 +204,7 @@ export interface RootRouteChildren {
   LoginLazyRoute: typeof LoginLazyRoute
   ManageCompaniesLazyRoute: typeof ManageCompaniesLazyRoute
   RegisterLazyRoute: typeof RegisterLazyRoute
+  CompanyDetailsCompanyIdLazyRoute: typeof CompanyDetailsCompanyIdLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -188,6 +214,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginLazyRoute: LoginLazyRoute,
   ManageCompaniesLazyRoute: ManageCompaniesLazyRoute,
   RegisterLazyRoute: RegisterLazyRoute,
+  CompanyDetailsCompanyIdLazyRoute: CompanyDetailsCompanyIdLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -205,7 +232,8 @@ export const routeTree = rootRoute
         "/create-new-company",
         "/login",
         "/manage-companies",
-        "/register"
+        "/register",
+        "/company-details/$companyId"
       ]
     },
     "/": {
@@ -225,6 +253,9 @@ export const routeTree = rootRoute
     },
     "/register": {
       "filePath": "register.lazy.tsx"
+    },
+    "/company-details/$companyId": {
+      "filePath": "company-details/$companyId.lazy.tsx"
     }
   }
 }

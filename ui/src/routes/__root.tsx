@@ -16,7 +16,7 @@ function RenderComponent() {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
       <Navigation />
       <Box
         component="main"

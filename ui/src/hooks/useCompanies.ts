@@ -34,3 +34,20 @@ export const useCompaniesByOwner = () => {
     isLoading,
   };
 };
+
+export const useCompany = (companyId: string) => {
+  const query = useQuery<Company>({
+    queryKey: ['company', companyId],
+    queryFn: async () => {
+      const { data } = await api.get(`/companies/${companyId}`);
+      return data;
+    },
+  });
+
+  const { data, isLoading } = query;
+
+  return {
+    data: data as Company,
+    isLoading,
+  };
+};

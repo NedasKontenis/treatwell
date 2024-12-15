@@ -16,6 +16,7 @@ import {
 import { Edit } from '@mui/icons-material';
 import { Controller, useForm } from 'react-hook-form';
 import { Company } from '../../types/company';
+import { Link } from '@tanstack/react-router';
 
 const modalStyle = {
   position: 'absolute',
@@ -74,6 +75,7 @@ export const CompaniesTable = ({ companies, onCompanyUpdate }) => {
                 <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>
                   Working Hours
                 </TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Services</TableCell>
                 <TableCell sx={{ width: 50 }}></TableCell>
               </TableRow>
             </TableHead>
@@ -144,6 +146,17 @@ export const CompaniesTable = ({ companies, onCompanyUpdate }) => {
                         </Typography>
                       ))}
                     </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      component={Link}
+                      to="/company-details/$companyId"
+                      params={{ companyId: company.id }}
+                      variant="contained"
+                      size="small"
+                    >
+                      Manage Services
+                    </Button>
                   </TableCell>
                   <TableCell>
                     <Button
