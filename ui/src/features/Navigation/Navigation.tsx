@@ -24,7 +24,7 @@ export const Navigation = () => {
   return (
     <Box
       sx={{
-        width: 250,
+        minWidth: 250,
         height: '100vh',
         bgcolor: 'background.paper',
         display: 'flex',

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ENDPOINT, PRS_AUTH_TOKEN } from '../constants/constants.js';
+import { ENDPOINT, PRS_AUTH_TOKEN } from '../constants/constants';
 import { api } from '../api/api';
 
 export const useAuthStore = create((set) => ({

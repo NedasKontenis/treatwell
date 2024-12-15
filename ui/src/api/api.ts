@@ -1,4 +1,4 @@
-import { PRS_AUTH_TOKEN } from '../constants/constants.js';
+import { PRS_AUTH_TOKEN } from '../constants/constants';
 import axios from 'axios';
 
 const api = axios.create({
