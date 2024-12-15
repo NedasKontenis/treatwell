@@ -1,0 +1,39 @@
+package com.example.treatwell.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.List;
+
+@Entity
+@Table(name = "companies")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Company {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(unique = true, nullable = false)
+    private String registrationCode;
+
+    private String description;
+    private String address;
+    private String phoneNumber;
+    private String email;
+    private boolean isActive = true;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<PRSService> services;
+}

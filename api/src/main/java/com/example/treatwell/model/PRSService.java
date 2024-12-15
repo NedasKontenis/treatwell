@@ -7,32 +7,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "services")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class PRSService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String email;
-
     @Column(nullable = false)
-    private String password;
+    private String name;
 
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
+    private String description;
+    private double price;
+    private Integer durationMinutes;
     private boolean isActive = true;
 
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
+    @Enumerated(EnumType.STRING)
+    private ServiceCategory category;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 }
