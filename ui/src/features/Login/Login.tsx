@@ -9,7 +9,7 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { useLogin } from '../../hooks/useLogin.js';
+import { useLogin } from '../../hooks/useLogin.ts';
 
 export const Login = () => {
   const [showError, setShowError] = useState(false);

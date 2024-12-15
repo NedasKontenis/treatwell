@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { PRS_AUTH_TOKEN } from '../constants/constants.js';
+import { ENDPOINT, PRS_AUTH_TOKEN } from '../constants/constants.js';
+import { api } from '../api/api';
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -24,11 +25,23 @@ export const useAuthStore = create((set) => ({
     });
   },
 
-  initAuth: () => {
+  initAuth: async () => {
     const token = localStorage.getItem(PRS_AUTH_TOKEN);
+
     if (token) {
-      // TODO: need to revalidate the token with fresh data here on init
-      set({ token, isAuthenticated: true });
+      try {
+        const response = await api.get(ENDPOINT.TOKEN_AUTH);
+        set({
+          user: response.data,
+          isAuthenticated: true,
+        });
+      } catch (error) {
+        localStorage.removeItem(PRS_AUTH_TOKEN);
+        set({
+          user: null,
+          isAuthenticated: false,
+        });
+      }
     }
   },
 }));

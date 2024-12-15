@@ -1,5 +1,5 @@
-import { Login } from './features/Login/Login.jsx';
-import { RegisterForm } from './features/RegistrationForm/RegistrationForm.jsx';
+import { Login } from './features/Login/Login';
+import { RegisterForm } from './features/RegistrationForm/RegistrationForm';
 
 export function App() {
   return (

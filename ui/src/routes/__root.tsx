@@ -1,20 +1,34 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { Navigation } from '../features/Navigation/Navigation';
+import { Box } from '@mui/material';
+import { useEffect } from 'react';
+import { useAuthStore } from '../stores/loginStore';
 
 export const Route = createRootRoute({
-  component: () => (
-    <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{' '}
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-      </div>
-      <hr />
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
+  component: RenderComponent,
 });
+
+function RenderComponent() {
+  const initAuth = useAuthStore((state) => state.initAuth);
+
+  useEffect(() => {
+    initAuth();
+  }, []);
+
+  return (
+    <Box sx={{ display: 'flex', height: '100vh' }}>
+      <Navigation />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          overflow: 'auto',
+          padding: 2, // Optional: adds some padding to the main content area
+        }}
+      >
+        <Outlet />
+      </Box>
+      {/*<TanStackRouterDevtools />*/}
+    </Box>
+  );
+}
