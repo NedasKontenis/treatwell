@@ -24,4 +24,13 @@ public class CompanyController {
     public ResponseEntity<List<CompanyDTO>> getCompaniesByOwner(@PathVariable Long ownerId) {
         return ResponseEntity.ok(companyService.getCompaniesByOwner(ownerId));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CompanyDTO> updateCompany(
+            @PathVariable Long id,
+            @RequestBody CompanyDTO companyDTO
+    ) {
+        companyDTO.setId(id);
+        return ResponseEntity.ok(companyService.updateCompany(companyDTO));
+    }
 }

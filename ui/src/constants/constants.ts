@@ -4,4 +4,6 @@ export const ENDPOINT = {
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
   TOKEN_AUTH: '/auth/token',
+  COMPANIES: '/companies',
+  COMPANIES_BY_OWNER: '/companies/owner/',
 };

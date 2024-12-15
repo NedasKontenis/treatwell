@@ -1,7 +1,10 @@
 package com.example.treatwell.service;
 
+import com.example.treatwell.exception.ResourceNotFoundException;
+import com.example.treatwell.mapper.CompanyMapper;
 import com.example.treatwell.model.Company;
 import com.example.treatwell.model.User;
+import com.example.treatwell.model.WorkingHours;
 import com.example.treatwell.model.dto.CompanyDTO;
 import com.example.treatwell.repository.CompanyRepository;
 import com.example.treatwell.repository.UserRepository;
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 public class CompanyService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final CompanyMapper companyMapper;
 
     public CompanyDTO createCompany(CompanyDTO companyDTO) {
         User owner = userRepository.findById(companyDTO.getOwnerId())
@@ -56,5 +60,31 @@ public class CompanyService {
                 .logoUrl(company.getLogoUrl())
                 .workingHours(company.getWorkingHours())
                 .build();
+    }
+
+    public CompanyDTO updateCompany(CompanyDTO companyDTO) {
+        Company company = companyRepository.findById(companyDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + companyDTO.getId()));
+
+        company.setDescription(companyDTO.getDescription());
+        company.setAddress(companyDTO.getAddress());
+        company.setPhoneNumber(companyDTO.getPhoneNumber());
+        company.setEmail(companyDTO.getEmail());
+
+        if (companyDTO.getWorkingHours() != null) {
+            company.getWorkingHours().clear();
+            company.getWorkingHours().addAll(
+                    companyDTO.getWorkingHours().stream()
+                            .map(workingHourDTO -> new WorkingHours(
+                                    workingHourDTO.getDayOfWeek(),
+                                    workingHourDTO.getOpenTime(),
+                                    workingHourDTO.getCloseTime()
+                            ))
+                            .collect(Collectors.toList())
+            );
+        }
+
+        Company updatedCompany = companyRepository.save(company);
+        return companyMapper.toDTO(updatedCompany);
     }
 }
