@@ -20,6 +20,11 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.createCompany(companyDTO));
     }
 
+    @GetMapping
+    public ResponseEntity<List<CompanyDTO>> getCompanies() {
+        return ResponseEntity.ok(companyService.getCompanies());
+    }
+
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<List<CompanyDTO>> getCompaniesByOwner(@PathVariable Long ownerId) {
         return ResponseEntity.ok(companyService.getCompaniesByOwner(ownerId));

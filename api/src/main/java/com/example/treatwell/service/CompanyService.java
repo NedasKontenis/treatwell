@@ -46,6 +46,12 @@ public class CompanyService {
                 .collect(Collectors.toList());
     }
 
+    public List<CompanyDTO> getCompanies() {
+        return companyRepository.findAll().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     private CompanyDTO mapToDTO(Company company) {
         return CompanyDTO.builder()
                 .id(company.getId())
