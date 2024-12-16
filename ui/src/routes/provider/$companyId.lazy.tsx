@@ -11,11 +11,16 @@ import {
   Typography,
 } from '@mui/material';
 import { Clock, MapPin } from 'lucide-react';
-import { useServices } from '../../hooks/useServices';
+import { ServiceDTO, useServices } from '../../hooks/useServices';
 import { useState } from 'react';
 import { useAvailableSlots } from '../../hooks/useAvailableSlots';
 import { format } from 'date-fns';
 import { DateSelector } from '../../components/DateSelector/DateSelector';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '../../stores/loginStore';
+import { api } from '../../api/api';
+import { LoginReminderModal } from '../../components/LoginRemainderModal/LoginRemainderModal';
+import { ReservationConfirmModal } from '../../components/ReservationConfirmModal/ReservationConfirmModal';
 
 export const Route = createLazyFileRoute('/provider/$companyId')({
   component: PublicCompanyDetails,
@@ -25,13 +30,31 @@ function PublicCompanyDetails() {
   const { companyId } = Route.useParams();
   const { data: company, isLoading: isLoadingCompany } = useCompany(companyId);
   const { services, isLoading: isLoadingServices } = useServices(companyId);
-  const [selectedService, setSelectedService] = useState(null);
+  const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+
+  const [selectedService, setSelectedService] = useState<ServiceDTO>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const { data: availableSlots, isLoading: isLoadingSlots } = useAvailableSlots(
     selectedService?.id,
     selectedDate
   );
+
+  const createReservation = useMutation({
+    mutationFn: async (data) => {
+      const response = await api.post('/reservations', data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['availableSlots', selectedService?.id, selectedDate],
+      });
+    },
+  });
 
   if (isLoadingCompany || isLoadingServices) {
     return <div>Loading...</div>;
@@ -41,9 +64,36 @@ function PublicCompanyDetails() {
     return <div>Company not found</div>;
   }
 
+  const handleTimeClick = (time) => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    setSelectedTime(time);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmReservation = async () => {
+    if (!selectedTime || !selectedService || !user) return;
+
+    try {
+      await createReservation.mutateAsync({
+        serviceId: selectedService.id,
+        userId: user.id,
+        dateTime: selectedTime,
+        totalPrice: selectedService.price,
+      } as any);
+      setShowConfirmModal(false);
+      // You might want to add a success notification here
+    } catch (error) {
+      // You might want to add an error notification here
+      console.error('Failed to create reservation:', error);
+    }
+  };
+
   return (
     <Box sx={{ p: 3, maxWidth: '1200px', margin: '0 auto' }}>
-      {/* Company Header */}
       <Paper sx={{ mb: 3, overflow: 'hidden' }}>
         <Box sx={{ position: 'relative' }}>
           {company.logoUrl && (
@@ -74,7 +124,6 @@ function PublicCompanyDetails() {
       </Paper>
 
       <Grid container spacing={3}>
-        {/* Working Hours & Contact */}
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
@@ -112,7 +161,6 @@ function PublicCompanyDetails() {
           </Paper>
         </Grid>
 
-        {/* Services Section */}
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
@@ -191,16 +239,17 @@ function PublicCompanyDetails() {
               ))}
             </Grid>
 
-            {/* Available Slots */}
             {selectedService && (
               <Box sx={{ mt: 3 }}>
                 <DateSelector
                   selectedDate={selectedDate}
                   onDateSelect={setSelectedDate}
                 />
+
                 <Typography variant="h6" gutterBottom>
                   Available Times for {format(selectedDate, 'EEEE, MMMM d')}
                 </Typography>
+
                 {isLoadingSlots ? (
                   <Typography>Loading available times...</Typography>
                 ) : availableSlots?.length ? (
@@ -209,22 +258,16 @@ function PublicCompanyDetails() {
                       <Grid item key={slot}>
                         <Button
                           variant="outlined"
-                          onClick={() => {
-                            // Handle reservation
-                          }}
+                          onClick={() => handleTimeClick(new Date(slot))}
                         >
-                          {new Date(slot).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                          })}
+                          {format(new Date(slot), 'HH:mm')}
                         </Button>
                       </Grid>
                     ))}
                   </Grid>
                 ) : (
                   <Typography color="text.secondary">
-                    No available times for today
+                    No available times for this day
                   </Typography>
                 )}
               </Box>
@@ -232,6 +275,22 @@ function PublicCompanyDetails() {
           </Paper>
         </Grid>
       </Grid>
+
+      <LoginReminderModal
+        open={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
+
+      {selectedService && selectedTime && (
+        <ReservationConfirmModal
+          open={showConfirmModal}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={handleConfirmReservation}
+          service={selectedService}
+          selectedTime={selectedTime}
+          isLoading={createReservation.isPending}
+        />
+      )}
     </Box>
   );
 }
