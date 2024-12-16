@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import { useCompany } from '../../hooks/useCompanies';
+import { ServicesManagement } from '../../features/ServiceManagement/ServiceManagement';
 
 export const Route = createLazyFileRoute('/company-details/$companyId')({
   component: CompanyDetails,
@@ -127,11 +128,12 @@ function CompanyDetails() {
         </Typography>
 
         <Paper sx={{ width: '100%' }}>
-          <Box sx={{ p: 3 }}>
-            <Typography color="text.secondary">
-              Services management will be implemented here.
-            </Typography>
-          </Box>
+          {/*<Box sx={{ p: 3 }}>*/}
+          {/*  <Typography color="text.secondary">*/}
+          {/*    Services management will be implemented here.*/}
+          {/*  </Typography>*/}
+          {/*</Box>*/}
+          <ServicesManagement companyId={companyId} />
         </Paper>
       </Box>
     </Box>

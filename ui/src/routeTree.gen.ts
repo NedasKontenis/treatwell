@@ -22,6 +22,7 @@ const LoginLazyImport = createFileRoute('/login')()
 const CreateNewCompanyLazyImport = createFileRoute('/create-new-company')()
 const CompaniesLazyImport = createFileRoute('/companies')()
 const IndexLazyImport = createFileRoute('/')()
+const ProviderCompanyIdLazyImport = createFileRoute('/provider/$companyId')()
 const CompanyDetailsCompanyIdLazyImport = createFileRoute(
   '/company-details/$companyId',
 )()
@@ -67,6 +68,14 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const ProviderCompanyIdLazyRoute = ProviderCompanyIdLazyImport.update({
+  id: '/provider/$companyId',
+  path: '/provider/$companyId',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/provider/$companyId.lazy').then((d) => d.Route),
+)
 
 const CompanyDetailsCompanyIdLazyRoute =
   CompanyDetailsCompanyIdLazyImport.update({
@@ -130,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompanyDetailsCompanyIdLazyImport
       parentRoute: typeof rootRoute
     }
+    '/provider/$companyId': {
+      id: '/provider/$companyId'
+      path: '/provider/$companyId'
+      fullPath: '/provider/$companyId'
+      preLoaderRoute: typeof ProviderCompanyIdLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -143,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
+  '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -153,6 +170,7 @@ export interface FileRoutesByTo {
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
+  '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
 }
 
 export interface FileRoutesById {
@@ -164,6 +182,7 @@ export interface FileRoutesById {
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
+  '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -176,6 +195,7 @@ export interface FileRouteTypes {
     | '/manage-companies'
     | '/register'
     | '/company-details/$companyId'
+    | '/provider/$companyId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -185,6 +205,7 @@ export interface FileRouteTypes {
     | '/manage-companies'
     | '/register'
     | '/company-details/$companyId'
+    | '/provider/$companyId'
   id:
     | '__root__'
     | '/'
@@ -194,6 +215,7 @@ export interface FileRouteTypes {
     | '/manage-companies'
     | '/register'
     | '/company-details/$companyId'
+    | '/provider/$companyId'
   fileRoutesById: FileRoutesById
 }
 
@@ -205,6 +227,7 @@ export interface RootRouteChildren {
   ManageCompaniesLazyRoute: typeof ManageCompaniesLazyRoute
   RegisterLazyRoute: typeof RegisterLazyRoute
   CompanyDetailsCompanyIdLazyRoute: typeof CompanyDetailsCompanyIdLazyRoute
+  ProviderCompanyIdLazyRoute: typeof ProviderCompanyIdLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -215,6 +238,7 @@ const rootRouteChildren: RootRouteChildren = {
   ManageCompaniesLazyRoute: ManageCompaniesLazyRoute,
   RegisterLazyRoute: RegisterLazyRoute,
   CompanyDetailsCompanyIdLazyRoute: CompanyDetailsCompanyIdLazyRoute,
+  ProviderCompanyIdLazyRoute: ProviderCompanyIdLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -233,7 +257,8 @@ export const routeTree = rootRoute
         "/login",
         "/manage-companies",
         "/register",
-        "/company-details/$companyId"
+        "/company-details/$companyId",
+        "/provider/$companyId"
       ]
     },
     "/": {
@@ -256,6 +281,9 @@ export const routeTree = rootRoute
     },
     "/company-details/$companyId": {
       "filePath": "company-details/$companyId.lazy.tsx"
+    },
+    "/provider/$companyId": {
+      "filePath": "provider/$companyId.lazy.tsx"
     }
   }
 }

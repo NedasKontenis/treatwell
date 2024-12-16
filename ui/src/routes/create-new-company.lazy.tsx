@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Alert,
   Grid,
+  MenuItem,
 } from '@mui/material';
 import { useCreateCompany } from '../hooks/useCompanies';
 import { useAuthStore } from '../stores/loginStore';
@@ -20,6 +21,8 @@ interface WorkingHours {
   openTime: string | null;
   closeTime: string | null;
 }
+
+const SERVICE_CATEGORIES = ['BEAUTY', 'HEALTH', 'FITNESS', 'OTHER'];
 
 export interface CompanyForm {
   name: string;
@@ -60,6 +63,7 @@ function CreateCompany() {
         saturday: { open: null, close: null },
         sunday: { open: null, close: null },
       },
+      category: 'BEAUTY',
     },
   });
   const createCompany = useCreateCompany();
@@ -78,6 +82,8 @@ function CreateCompany() {
       openTime: open ? formatTime(open) : null,
       closeTime: close ? formatTime(close) : null,
     }));
+
+    console.log({ data });
 
     const payload = {
       ...data,
@@ -231,6 +237,30 @@ function CreateCompany() {
                 helperText={fieldState.error?.message}
                 disabled={createCompany.isPending}
               />
+            )}
+          />
+
+          <Controller
+            name="category"
+            control={control}
+            rules={{ required: 'Category is required' }}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                select
+                fullWidth
+                label="Category"
+                margin="normal"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+                disabled={createCompany.isPending}
+              >
+                {SERVICE_CATEGORIES.map((category) => (
+                  <MenuItem key={category} value={category}>
+                    {category}
+                  </MenuItem>
+                ))}
+              </TextField>
             )}
           />
 

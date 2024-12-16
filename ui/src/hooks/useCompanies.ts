@@ -51,3 +51,20 @@ export const useCompany = (companyId: string) => {
     isLoading,
   };
 };
+
+export const useCompanies = () => {
+  const query = useQuery<Company[]>({
+    queryKey: ['companies'],
+    queryFn: async () => {
+      const { data } = await api.get('/companies');
+      return data;
+    },
+  });
+
+  const { data, isLoading } = query;
+
+  return {
+    data: data as Company[],
+    isLoading,
+  };
+};

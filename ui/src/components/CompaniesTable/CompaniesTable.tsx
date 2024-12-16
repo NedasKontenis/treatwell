@@ -12,6 +12,7 @@ import {
   Modal,
   Button,
   TextField,
+  MenuItem,
 } from '@mui/material';
 import { Edit } from '@mui/icons-material';
 import { Controller, useForm } from 'react-hook-form';
@@ -33,12 +34,17 @@ const modalStyle = {
   overflow: 'auto',
 };
 
+const SERVICE_CATEGORIES = ['BEAUTY', 'HEALTH', 'FITNESS', 'OTHER'];
+
 interface CompanyTableProps {
   companies: Company[];
   onCompanyUpdate: (updatedCompany: Company) => void;
 }
 
-export const CompaniesTable = ({ companies, onCompanyUpdate }) => {
+export const CompaniesTable = ({
+  companies,
+  onCompanyUpdate,
+}: CompanyTableProps) => {
   const { control, handleSubmit, reset } = useForm();
   const [editingCompany, setEditingCompany] = useState(null);
 
@@ -72,6 +78,7 @@ export const CompaniesTable = ({ companies, onCompanyUpdate }) => {
                 <TableCell sx={{ fontWeight: 'bold' }}>Company Info</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Details</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Contact</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Category</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>
                   Working Hours
                 </TableCell>
@@ -127,6 +134,9 @@ export const CompaniesTable = ({ companies, onCompanyUpdate }) => {
                     <Typography variant="body2" color="primary">
                       {company.email}
                     </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2">{company.category}</Typography>
                   </TableCell>
                   <TableCell>
                     <Box
@@ -259,6 +269,25 @@ export const CompaniesTable = ({ companies, onCompanyUpdate }) => {
               control={control}
               render={({ field }) => (
                 <TextField {...field} label="Email" fullWidth />
+              )}
+            />
+            <Controller
+              name="category"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  select
+                  label="Category"
+                  fullWidth
+                  margin="normal"
+                >
+                  {SERVICE_CATEGORIES.map((category) => (
+                    <MenuItem key={category} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                </TextField>
               )}
             />
           </Box>

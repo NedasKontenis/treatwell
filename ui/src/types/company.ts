@@ -8,6 +8,7 @@ export interface Company {
   email: string;
   ownerId: number;
   logoUrl: string | null;
+  category: string;
   workingHours: {
     dayOfWeek: string;
     openTime: string | null;
