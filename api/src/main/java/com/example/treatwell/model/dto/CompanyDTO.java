@@ -23,4 +23,5 @@ public class CompanyDTO {
     private Long ownerId;
     private String logoUrl;
     private List<WorkingHours> workingHours;
+    private String category;
 }

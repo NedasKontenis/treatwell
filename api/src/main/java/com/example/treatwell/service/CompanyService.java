@@ -2,9 +2,7 @@ package com.example.treatwell.service;
 
 import com.example.treatwell.exception.ResourceNotFoundException;
 import com.example.treatwell.mapper.CompanyMapper;
-import com.example.treatwell.model.Company;
-import com.example.treatwell.model.User;
-import com.example.treatwell.model.WorkingHours;
+import com.example.treatwell.model.*;
 import com.example.treatwell.model.dto.CompanyDTO;
 import com.example.treatwell.repository.CompanyRepository;
 import com.example.treatwell.repository.UserRepository;
@@ -36,6 +34,7 @@ public class CompanyService {
                 .isActive(true)
                 .logoUrl(companyDTO.getLogoUrl())
                 .workingHours(companyDTO.getWorkingHours())
+                .category(ServiceCategory.valueOf(companyDTO.getCategory()))
                 .build();
 
         return mapToDTO(companyRepository.save(company));
@@ -59,6 +58,7 @@ public class CompanyService {
                 .ownerId(company.getOwner().getId())
                 .logoUrl(company.getLogoUrl())
                 .workingHours(company.getWorkingHours())
+                .category(company.getCategory().name())
                 .build();
     }
 
@@ -70,6 +70,7 @@ public class CompanyService {
         company.setAddress(companyDTO.getAddress());
         company.setPhoneNumber(companyDTO.getPhoneNumber());
         company.setEmail(companyDTO.getEmail());
+        company.setCategory(ServiceCategory.valueOf(companyDTO.getCategory()));
 
         if (companyDTO.getWorkingHours() != null) {
             company.getWorkingHours().clear();

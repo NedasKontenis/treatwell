@@ -25,10 +25,9 @@ public class PRSService {
     private Integer durationMinutes;
     private boolean isActive = true;
 
-    @Enumerated(EnumType.STRING)
-    private ServiceCategory category;
-
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
+
+    private String imageUrl;
 }

@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ServiceRepository extends JpaRepository<PRSService, Long> {
+public interface PRSServiceRepository extends JpaRepository<PRSService, Long> {
     List<PRSService> findByCompanyId(Long companyId);
-    List<PRSService> findByCategory(ServiceCategory category);
     List<PRSService> findByCompanyIdAndIsActiveTrue(Long companyId);
 }

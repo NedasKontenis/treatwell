@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceDTO {
+public class PRSServiceDTO {
     private Long id;
     private String name;
     private String description;
     private double price;
     private Integer durationMinutes;
-    private String category;
     private Long companyId;
+    private String imageUrl;
 }

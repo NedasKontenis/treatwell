@@ -6,7 +6,7 @@ import com.example.treatwell.model.User;
 import com.example.treatwell.model.dto.ReservationDTO;
 import com.example.treatwell.model.ReservationStatus;
 import com.example.treatwell.repository.ReservationRepository;
-import com.example.treatwell.repository.ServiceRepository;
+import com.example.treatwell.repository.PRSServiceRepository;
 import com.example.treatwell.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
-    private final ServiceRepository serviceRepository;
+    private final PRSServiceRepository serviceRepository;
 
     @Transactional
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
