@@ -80,6 +80,16 @@ export const Navigation = () => {
           </ListItem>
         </Link>
       )}
+      {isAuthenticated && isCompanyAdmin && (
+        <Link to="/usermanagement" style={{ textDecoration: 'none' }}>
+      <ListItem button>
+        <ListItemIcon>
+          <AdminPanelSettings />
+        </ListItemIcon>
+        <ListItemText primary="user management" />
+      </ListItem>
+    </Link>
+      )}
 
       <Divider sx={{ mt: 'auto' }} />
 
