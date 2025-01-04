@@ -1,15 +1,15 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '../api/api';
-import { CompanyForm } from '../routes/create-new-company.lazy';
 import { useAuthStore } from '../stores/loginStore';
 import { Company } from '../types/company';
 import { ENDPOINT } from '../constants/constants';
+import type { CompanyFormData } from '../schemas/companySchema';
 
 export const useCreateCompany = () => {
   const { user } = useAuthStore();
 
   return useMutation({
-    mutationFn: (data: CompanyForm) => {
+    mutationFn: (data: CompanyFormData) => {
       return api.post(ENDPOINT.COMPANIES, { ...data, ownerId: user.id });
     },
   });

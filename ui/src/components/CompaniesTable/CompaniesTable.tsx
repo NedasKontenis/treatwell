@@ -18,6 +18,11 @@ import { Edit } from '@mui/icons-material';
 import { Controller, useForm } from 'react-hook-form';
 import { Company } from '../../types/company';
 import { Link } from '@tanstack/react-router';
+import {
+  CompanyEditFormData,
+  companyEditSchema,
+} from '../../schemas/companyEditSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const modalStyle = {
   position: 'absolute',
@@ -45,7 +50,15 @@ export const CompaniesTable = ({
   companies,
   onCompanyUpdate,
 }: CompanyTableProps) => {
-  const { control, handleSubmit, reset } = useForm();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CompanyEditFormData>({
+    resolver: zodResolver(companyEditSchema),
+    mode: 'onBlur',
+  });
   const [editingCompany, setEditingCompany] = useState(null);
 
   const handleEditClick = (company) => {
@@ -230,7 +243,7 @@ export const CompaniesTable = ({
           <Controller
             name="description"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
                 label="Description"
@@ -238,6 +251,8 @@ export const CompaniesTable = ({
                 multiline
                 rows={4}
                 sx={{ mb: 2 }}
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
               />
             )}
           />
@@ -253,34 +268,57 @@ export const CompaniesTable = ({
             <Controller
               name="address"
               control={control}
-              render={({ field }) => (
-                <TextField {...field} label="Address" fullWidth />
+              rules={{ required: 'Address is required' }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  label="Address"
+                  fullWidth
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                />
               )}
             />
+
             <Controller
               name="phoneNumber"
               control={control}
-              render={({ field }) => (
-                <TextField {...field} label="Phone" fullWidth />
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  label="Phone"
+                  fullWidth
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                />
               )}
             />
+
             <Controller
               name="email"
               control={control}
-              render={({ field }) => (
-                <TextField {...field} label="Email" fullWidth />
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  label="Email"
+                  fullWidth
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                />
               )}
             />
+
             <Controller
               name="category"
               control={control}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <TextField
                   {...field}
                   select
                   label="Category"
                   fullWidth
-                  margin="normal"
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
                 >
                   {SERVICE_CATEGORIES.map((category) => (
                     <MenuItem key={category} value={category}>
@@ -314,26 +352,42 @@ export const CompaniesTable = ({
               <Controller
                 name={`workingHours.${index}.openTime`}
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <TextField
                     {...field}
                     label="Open Time"
                     type="time"
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ step: 300 }}
+                    error={
+                      !!fieldState.error ||
+                      !!errors.workingHours?.[index]?.message
+                    }
+                    helperText={
+                      fieldState.error?.message ||
+                      errors.workingHours?.[index]?.message
+                    }
                   />
                 )}
               />
               <Controller
                 name={`workingHours.${index}.closeTime`}
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <TextField
                     {...field}
                     label="Close Time"
                     type="time"
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ step: 300 }}
+                    error={
+                      !!fieldState.error ||
+                      !!errors.workingHours?.[index]?.message
+                    }
+                    helperText={
+                      fieldState.error?.message ||
+                      errors.workingHours?.[index]?.message
+                    }
                   />
                 )}
               />

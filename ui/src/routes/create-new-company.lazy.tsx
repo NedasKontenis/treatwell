@@ -1,5 +1,6 @@
 import { createLazyFileRoute, Navigate } from '@tanstack/react-router';
 import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
   TextField,
@@ -15,6 +16,7 @@ import { useAuthStore } from '../stores/loginStore';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { companySchema, type CompanyFormData } from '../schemas/companySchema';
 
 interface WorkingHours {
   dayOfWeek: string;
@@ -22,26 +24,7 @@ interface WorkingHours {
   closeTime: string | null;
 }
 
-const SERVICE_CATEGORIES = ['BEAUTY', 'HEALTH', 'FITNESS', 'OTHER'];
-
-export interface CompanyForm {
-  name: string;
-  registrationCode: string;
-  description: string;
-  address: string;
-  phoneNumber: string;
-  email: string;
-  logoUrl?: string;
-  workingHours: {
-    monday: { open: Date | null; close: Date | null };
-    tuesday: { open: Date | null; close: Date | null };
-    wednesday: { open: Date | null; close: Date | null };
-    thursday: { open: Date | null; close: Date | null };
-    friday: { open: Date | null; close: Date | null };
-    saturday: { open: Date | null; close: Date | null };
-    sunday: { open: Date | null; close: Date | null };
-  };
-}
+const SERVICE_CATEGORIES = ['BEAUTY', 'HEALTH', 'FITNESS', 'OTHER'] as const;
 
 export const Route = createLazyFileRoute('/create-new-company')({
   component: CreateCompany,
@@ -51,8 +34,10 @@ function CreateCompany() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
-  } = useForm<CompanyForm>({
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<CompanyFormData>({
+    resolver: zodResolver(companySchema),
     defaultValues: {
       workingHours: {
         monday: { open: null, close: null },
@@ -65,16 +50,17 @@ function CreateCompany() {
       },
       category: 'BEAUTY',
     },
+    mode: 'onBlur',
   });
-  const createCompany = useCreateCompany();
 
+  const createCompany = useCreateCompany();
   const { user } = useAuthStore();
 
   if (user?.role !== 'COMPANY_ADMIN') {
     return <Navigate to="/" />;
   }
 
-  const onSubmit = async (data: CompanyForm) => {
+  const onSubmit = async (data: CompanyFormData) => {
     const workingHoursList: WorkingHours[] = Object.entries(
       data.workingHours
     ).map(([day, { open, close }]) => ({
@@ -83,12 +69,10 @@ function CreateCompany() {
       closeTime: close ? formatTime(close) : null,
     }));
 
-    console.log({ data });
-
     const payload = {
       ...data,
       workingHours: workingHoursList,
-    } as CompanyForm;
+    };
 
     createCompany.mutate(payload);
   };
@@ -102,7 +86,7 @@ function CreateCompany() {
     });
   };
 
-  const days: (keyof CompanyForm['workingHours'])[] = [
+  const days: (keyof CompanyFormData['workingHours'])[] = [
     'monday',
     'tuesday',
     'wednesday',
@@ -111,6 +95,14 @@ function CreateCompany() {
     'saturday',
     'sunday',
   ];
+
+  const validateWorkingHours = (closeTime: Date | null, day: string) => {
+    const openTime = watch(`workingHours.${day}.open`);
+    if (openTime && closeTime) {
+      return closeTime > openTime || 'Close time must be after open time';
+    }
+    return true;
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -135,7 +127,6 @@ function CreateCompany() {
           <Controller
             name="name"
             control={control}
-            rules={{ required: 'Company name is required' }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
@@ -152,7 +143,6 @@ function CreateCompany() {
           <Controller
             name="registrationCode"
             control={control}
-            rules={{ required: 'Registration code is required' }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
@@ -169,7 +159,7 @@ function CreateCompany() {
           <Controller
             name="description"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
                 fullWidth
@@ -177,6 +167,8 @@ function CreateCompany() {
                 margin="normal"
                 multiline
                 rows={4}
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
                 disabled={createCompany.isPending}
               />
             )}
@@ -185,7 +177,6 @@ function CreateCompany() {
           <Controller
             name="address"
             control={control}
-            rules={{ required: 'Address is required' }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
@@ -202,7 +193,6 @@ function CreateCompany() {
           <Controller
             name="phoneNumber"
             control={control}
-            rules={{ required: 'Phone number is required' }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
@@ -219,13 +209,6 @@ function CreateCompany() {
           <Controller
             name="email"
             control={control}
-            rules={{
-              required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address',
-              },
-            }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
@@ -243,7 +226,6 @@ function CreateCompany() {
           <Controller
             name="category"
             control={control}
-            rules={{ required: 'Category is required' }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
@@ -267,13 +249,15 @@ function CreateCompany() {
           <Controller
             name="logoUrl"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
                 fullWidth
                 label="Logo URL (Optional)"
                 margin="normal"
                 placeholder="https://example.com/logo.png"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
                 disabled={createCompany.isPending}
               />
             )}
@@ -294,7 +278,7 @@ function CreateCompany() {
                 <Controller
                   name={`workingHours.${day}.open`}
                   control={control}
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <TimePicker
                       {...field}
                       label="Open Time"
@@ -304,6 +288,12 @@ function CreateCompany() {
                           fullWidth: true,
                           margin: 'normal',
                           disabled: createCompany.isPending,
+                          error:
+                            !!errors.workingHours?.[day]?.open ||
+                            !!errors.workingHours?.[day]?.message,
+                          helperText:
+                            errors.workingHours?.[day]?.open?.message ||
+                            errors.workingHours?.[day]?.message,
                         },
                       }}
                     />
@@ -314,7 +304,10 @@ function CreateCompany() {
                 <Controller
                   name={`workingHours.${day}.close`}
                   control={control}
-                  render={({ field }) => (
+                  rules={{
+                    validate: (value) => validateWorkingHours(value, day),
+                  }}
+                  render={({ field, fieldState }) => (
                     <TimePicker
                       {...field}
                       label="Close Time"
@@ -324,6 +317,8 @@ function CreateCompany() {
                           fullWidth: true,
                           margin: 'normal',
                           disabled: createCompany.isPending,
+                          error: !!fieldState.error,
+                          helperText: fieldState.error?.message,
                         },
                       }}
                     />
@@ -338,7 +333,7 @@ function CreateCompany() {
             variant="contained"
             fullWidth
             sx={{ mt: 3 }}
-            disabled={createCompany.isPending}
+            disabled={createCompany.isPending || isSubmitting}
           >
             {createCompany.isPending ? (
               <CircularProgress size={24} color="inherit" />
