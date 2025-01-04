@@ -2,53 +2,37 @@ package com.example.treatwell.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.List;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
+@Table(name = "users")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    @Column(unique = true)
-    String login;
-    String password;
-    LocalDate birthDate;
-    String name;
-    String surname;
-    //@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    //@LazyCollection(LazyCollectionOption.FALSE)
-    //List<Service> myServices;
+    private Long id;
 
-    public User(String login, String password, LocalDate birthDate, String name, String surname) {
-        this.login = login;
-        this.password = password;
-        this.birthDate = birthDate;
-        this.name = name;
-        this.surname = surname;
-    }
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    public User(int id, String login, String password, LocalDate birthDate) {
-        this.id = id;
-        this.login = login;
-        this.password = password;
-        this.birthDate = birthDate;
-    }
+    @Column(nullable = false)
+    private String password;
 
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    private boolean isActive = true;
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 }
