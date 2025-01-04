@@ -1,5 +1,6 @@
 package com.example.treatwell.webControllers;
 
+import com.example.treatwell.model.Reservation;
 import com.example.treatwell.model.dto.ReservationDTO;
 import com.example.treatwell.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,10 @@ public class ReservationController {
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
         return ResponseEntity.ok(reservationService.createReservation(reservationDTO));
     }
-
+    @GetMapping
+    public List<Reservation> getAllReservations() {
+        return reservationService.getAllReservations();
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
         return ResponseEntity.ok(reservationService.getReservationById(id));

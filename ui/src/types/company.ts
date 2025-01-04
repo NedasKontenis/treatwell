@@ -14,4 +14,5 @@ export interface Company {
     openTime: string | null;
     closeTime: string | null;
   }[];
+  isActive: boolean;
 }

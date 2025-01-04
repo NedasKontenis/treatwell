@@ -113,6 +113,10 @@ public class ReservationService {
 //            throw e;
 //        }
 //    }
+public List<Reservation> getAllReservations() {
+    return reservationRepository.findAll();
+}
+
 
     public List<LocalDateTime> getAvailableSlots(Long serviceId, LocalDate requestedDate) {
         try {

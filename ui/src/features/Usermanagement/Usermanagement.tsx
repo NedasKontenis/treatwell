@@ -156,7 +156,7 @@ export const UserManagement: React.FC = () => {
                     <li key={user.id}>
                         <strong>{user.email}</strong> ({user.firstName} {user.lastName}) - {user.phoneNumber}
                         <button onClick={() => handleEditUser(user)}>Edit</button>
-                        <button onClick={() => handleDeleteUser(user.id!)}>Delete</button>
+                        <button onClick={() => handleDeleteUser(user.id!)}>Deactivate</button>
                     </li>
                 ))}
             </ul>

@@ -16,6 +16,7 @@ import LogoutIcon from '@mui/icons-material/ExitToApp';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Link } from '@tanstack/react-router';
 import { useAuthStore } from '../../stores/loginStore';
+import { Tablet } from 'lucide-react';
 
 export const Navigation = () => {
   const { isAuthenticated, user, logout } = useAuthStore();
@@ -70,6 +71,14 @@ export const Navigation = () => {
         </Link>
       </List>
 
+      <Link to="/reservations" style={{ textDecoration: 'none' }}>
+        <ListItem button>
+          <ListItemIcon>
+            <Tablet />
+          </ListItemIcon>
+          <ListItemText primary="reservations" />
+        </ListItem>
+      </Link>
       {isAuthenticated && isCompanyAdmin && (
         <Link to="/manage-companies" style={{ textDecoration: 'none' }}>
           <ListItem button>

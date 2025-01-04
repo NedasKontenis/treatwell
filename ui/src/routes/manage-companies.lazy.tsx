@@ -39,6 +39,22 @@ function ManageCompanies() {
     return <Navigate to="/" />;
   }
 
+  // const handleCompanyUpdate = async (updatedCompany: Company) => {
+  //   try {
+  //     // Call the mutation to update the company
+  //     await updateCompanyMutation.mutateAsync(updatedCompany);
+  //
+  //     // Optionally, update the local state to reflect the changes
+  //     setCompanies((prevCompanies) =>
+  //         prevCompanies.map((company) =>
+  //             company.id === updatedCompany.id ? updatedCompany : company
+  //         )
+  //     );
+  //   } catch (error) {
+  //     console.error('Failed to update company:', error);
+  //   }
+  // };
+
   const handleCompanyUpdate = async (updatedCompany) => {
     try {
       await updateCompanyMutation.mutateAsync(updatedCompany);

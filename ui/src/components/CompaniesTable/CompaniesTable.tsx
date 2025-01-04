@@ -83,6 +83,7 @@ export const CompaniesTable = ({
                   Working Hours
                 </TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Services</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
                 <TableCell sx={{ width: 50 }}></TableCell>
               </TableRow>
             </TableHead>
@@ -166,6 +167,21 @@ export const CompaniesTable = ({
                       size="small"
                     >
                       Manage Services
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    {/* New cell for Active/Inactive */}
+                    <Typography variant="body2" color={company.isActive ? 'green' : 'red'}>
+                      {company.isActive ? 'Active' : 'Inactive'}
+                    </Typography>
+                    <Button
+                        variant="outlined"
+                        color={company.isActive ? 'error' : 'success'}
+                        onClick={() => {
+                          onCompanyUpdate({ ...company, isActive: !company.isActive }); // Toggle active state
+                        }}
+                    >
+                      {company.isActive ? 'Deactivate' : 'Activate'}
                     </Button>
                   </TableCell>
                   <TableCell>

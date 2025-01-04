@@ -28,7 +28,7 @@ public class Company {
     private String address;
     private String phoneNumber;
     private String email;
-    private boolean isActive = true;
+    private boolean isActive = false;
 
     @Column(name = "logo_url")
     private String logoUrl;
