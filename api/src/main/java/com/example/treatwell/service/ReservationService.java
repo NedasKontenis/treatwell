@@ -179,6 +179,31 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReservationMappedWithServiceDTO> getServiceReservationsWithServiceData(Long serviceId) {
+        List<ReservationDTO> reservations = reservationRepository.findByServiceId(serviceId).stream().map(this::mapToDTO).toList();
+
+        return reservations.stream()
+                .map(reservation -> {
+                    PRSService service = serviceRepository.findById(reservation.getServiceId())
+                            .orElseThrow(() -> new RuntimeException("Service not found"));
+
+                    return ReservationMappedWithServiceDTO.builder()
+                            .id(reservation.getId())
+                            .dateTime(reservation.getDateTime())
+                            .notes(reservation.getNotes())
+                            .status(reservation.getStatus())
+                            .totalPrice(reservation.getTotalPrice())
+                            .userId(reservation.getUserId())
+                            .serviceId(reservation.getServiceId())
+                            .serviceName(service.getName())
+                            .serviceDescription(service.getDescription())
+                            .serviceDurationMinutes(service.getDurationMinutes())
+                            .serviceImageUrl(service.getImageUrl())
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public ReservationDTO updateReservationStatus(Long id, ReservationStatus status) {
         Reservation reservation = reservationRepository.findById(id)
