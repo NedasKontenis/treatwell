@@ -27,3 +27,5 @@ export const SERVICE_CATEGORIES_SEARCH_OPTIONS: {
   { id: Category.FITNESS, label: 'Fitness' },
   { id: Category.OTHER, label: 'Other' },
 ];
+
+export const ITEMS_PER_PAGE = 9;
