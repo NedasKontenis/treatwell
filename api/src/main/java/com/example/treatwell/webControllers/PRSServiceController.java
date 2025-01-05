@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,18 +20,17 @@ public class PRSServiceController {
     private final PRSServiceService serviceService;
     private final ReservationService reservationService;
 
-//    @GetMapping("/{serviceId}/available-slots")
-//    public ResponseEntity<List<LocalDateTime>> getAvailableSlots(
-//            @PathVariable Long serviceId) {
-//        return ResponseEntity.ok(reservationService.getAvailableSlots(serviceId));
-//    }
-
     @GetMapping("/{serviceId}/available-slots")
     public ResponseEntity<List<LocalDateTime>> getAvailableSlots(
             @PathVariable Long serviceId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
         return ResponseEntity.ok(reservationService.getAvailableSlots(serviceId, date));
+    }
+
+    @GetMapping("/{serviceId}")
+    public ResponseEntity<PRSServiceDTO> getServiceById(@PathVariable Long serviceId) {
+        return ResponseEntity.ok(serviceService.getServiceById(serviceId));
     }
 
     @GetMapping("/company/{companyId}")

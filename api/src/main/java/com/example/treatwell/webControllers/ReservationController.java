@@ -1,6 +1,8 @@
 package com.example.treatwell.webControllers;
 
+import com.example.treatwell.model.ReservationStatus;
 import com.example.treatwell.model.dto.ReservationDTO;
+import com.example.treatwell.model.dto.ReservationMappedWithServiceDTO;
 import com.example.treatwell.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +28,8 @@ public class ReservationController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ReservationDTO>> getUserReservations(@PathVariable Long userId) {
-        return ResponseEntity.ok(reservationService.getUserReservations(userId));
+    public ResponseEntity<List<ReservationMappedWithServiceDTO>> getUserReservations(@PathVariable Long userId) {
+        return ResponseEntity.ok(reservationService.getUserReservationWithServiceData(userId));
     }
 
     @GetMapping("/service/{serviceId}")
@@ -35,10 +37,11 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getServiceReservations(serviceId));
     }
 
-    @PutMapping("/{id}/status")
+    @PutMapping("/{id}")
     public ResponseEntity<ReservationDTO> updateReservationStatus(
             @PathVariable Long id,
-            @RequestParam String status) {
+            @RequestParam ReservationStatus status) {
+
         return ResponseEntity.ok(reservationService.updateReservationStatus(id, status));
     }
 

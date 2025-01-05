@@ -11,4 +11,5 @@ import java.util.List;
 public interface PRSServiceRepository extends JpaRepository<PRSService, Long> {
     List<PRSService> findByCompanyId(Long companyId);
     List<PRSService> findByCompanyIdAndIsActiveTrue(Long companyId);
+    PRSService findPRSServiceById(Long serviceId);
 }

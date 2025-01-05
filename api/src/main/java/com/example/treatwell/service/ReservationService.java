@@ -2,7 +2,9 @@ package com.example.treatwell.service;
 
 import com.example.treatwell.exception.ResourceNotFoundException;
 import com.example.treatwell.model.*;
+import com.example.treatwell.model.dto.PRSServiceDTO;
 import com.example.treatwell.model.dto.ReservationDTO;
+import com.example.treatwell.model.dto.ReservationMappedWithServiceDTO;
 import com.example.treatwell.repository.ReservationRepository;
 import com.example.treatwell.repository.PRSServiceRepository;
 import com.example.treatwell.repository.UserRepository;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.ServiceNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,7 +40,6 @@ public class ReservationService {
             LocalDate today = LocalDate.now();
             LocalDate oneMonthAhead = today.plusMonths(1);
 
-            // Validate requested date
             if (requestedDate.isBefore(today) || requestedDate.isAfter(oneMonthAhead)) {
                 return Collections.emptyList();
             }
@@ -58,24 +60,36 @@ public class ReservationService {
 
             LocalTime openTime = LocalTime.parse(workingHours.getOpenTime());
             LocalTime closeTime = LocalTime.parse(workingHours.getCloseTime());
+            int serviceDuration = service.getDurationMinutes();
 
-            // If checking today's slots, need to consider current time
+            // Calculate the last possible start time that would allow the service to complete before closing
+            LocalTime lastPossibleStartTime = closeTime.minusMinutes(serviceDuration);
+
+            // If the last possible start time is before the open time, no slots are available
+            if (lastPossibleStartTime.isBefore(openTime)) {
+                return Collections.emptyList();
+            }
+
+            // Generate normalized start time
+            LocalTime normalizedStartTime = openTime;
+
+            // If checking today's slots
             if (requestedDate.equals(today)) {
                 LocalTime now = LocalTime.now();
 
                 // Return empty list if business is closed for today
-                if (now.isAfter(closeTime)) {
+                if (now.isAfter(lastPossibleStartTime)) {
                     return Collections.emptyList();
                 }
 
-                // Return empty list if there's not enough time left to complete the service
-                if (now.plusMinutes(service.getDurationMinutes()).isAfter(closeTime)) {
-                    return Collections.emptyList();
+                // Find the next available normalized time slot after current time
+                while (normalizedStartTime.isBefore(now) || normalizedStartTime.equals(now)) {
+                    normalizedStartTime = normalizedStartTime.plusMinutes(serviceDuration);
                 }
 
-                // Adjust openTime if it's before current time
-                if (openTime.isBefore(now)) {
-                    openTime = now;
+                // If the next available slot would be too late
+                if (normalizedStartTime.isAfter(lastPossibleStartTime)) {
+                    return Collections.emptyList();
                 }
             }
 
@@ -83,25 +97,26 @@ public class ReservationService {
             LocalDateTime endOfDay = requestedDate.atTime(23, 59, 59);
 
             List<Reservation> existingReservations = reservationRepository
-                    .findByServiceIdAndDateTimeBetween(serviceId, startOfDay, endOfDay);
+                    .findByServiceIdAndDateTimeBetween(serviceId, startOfDay, endOfDay)
+                    .stream()
+                    .filter(reservation -> !ReservationStatus.CANCELLED.equals(reservation.getStatus()))
+                    .collect(Collectors.toList());
 
             List<LocalDateTime> availableSlots = new ArrayList<>();
-            LocalTime currentTime = openTime;
+            LocalTime currentTime = normalizedStartTime;
 
-            // Generate slots
-            while (currentTime.isBefore(closeTime) &&
-                    currentTime.plusMinutes(service.getDurationMinutes()).isBefore(closeTime.plusMinutes(1))) {
-
+            // Generate slots, but only up to the last possible start time
+            while (!currentTime.isAfter(lastPossibleStartTime)) {
                 LocalDateTime slotDateTime = LocalDateTime.of(requestedDate, currentTime);
 
                 boolean isAvailable = true;
-                LocalDateTime slotEnd = slotDateTime.plusMinutes(service.getDurationMinutes());
+                LocalDateTime slotEnd = slotDateTime.plusMinutes(serviceDuration);
 
                 for (Reservation reservation : existingReservations) {
                     if (reservation.getDateTime() == null) continue;
 
                     LocalDateTime reservationEnd = reservation.getDateTime()
-                            .plusMinutes(service.getDurationMinutes());
+                            .plusMinutes(serviceDuration);
 
                     if (!(slotDateTime.isEqual(reservationEnd) || slotDateTime.isAfter(reservationEnd) ||
                             slotEnd.isEqual(reservation.getDateTime()) || slotEnd.isBefore(reservation.getDateTime()))) {
@@ -114,7 +129,7 @@ public class ReservationService {
                     availableSlots.add(slotDateTime);
                 }
 
-                currentTime = currentTime.plusMinutes(service.getDurationMinutes());
+                currentTime = currentTime.plusMinutes(serviceDuration);
             }
 
             return availableSlots;
@@ -133,7 +148,6 @@ public class ReservationService {
         PRSService service = serviceRepository.findById(reservationDTO.getServiceId())
                 .orElseThrow(() -> new RuntimeException("Service not found"));
 
-        // Validate if the time slot is available
         validateTimeSlot(service.getId(), reservationDTO.getDateTime());
 
         Reservation reservation = Reservation.builder()
@@ -166,11 +180,11 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationDTO updateReservationStatus(Long id, String status) {
+    public ReservationDTO updateReservationStatus(Long id, ReservationStatus status) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
 
-        reservation.setStatus(ReservationStatus.valueOf(status));
+        reservation.setStatus(status);
         return mapToDTO(reservationRepository.save(reservation));
     }
 
@@ -181,6 +195,31 @@ public class ReservationService {
 
         reservation.setStatus(ReservationStatus.CANCELLED);
         reservationRepository.save(reservation);
+    }
+
+    public List<ReservationMappedWithServiceDTO> getUserReservationWithServiceData(Long userId) {
+        List<ReservationDTO> reservations = reservationRepository.findByUserId(userId).stream().map(this::mapToDTO).toList();
+
+        return reservations.stream()
+                .map(reservation -> {
+                    PRSService service = serviceRepository.findById(reservation.getServiceId())
+                            .orElseThrow(() -> new RuntimeException("Service not found"));
+
+                    return ReservationMappedWithServiceDTO.builder()
+                            .id(reservation.getId())
+                            .dateTime(reservation.getDateTime())
+                            .notes(reservation.getNotes())
+                            .status(reservation.getStatus())
+                            .totalPrice(reservation.getTotalPrice())
+                            .userId(reservation.getUserId())
+                            .serviceId(reservation.getServiceId())
+                            .serviceName(service.getName())
+                            .serviceDescription(service.getDescription())
+                            .serviceDurationMinutes(service.getDurationMinutes())
+                            .serviceImageUrl(service.getImageUrl())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
     private void validateTimeSlot(Long serviceId, LocalDateTime dateTime) {
@@ -194,7 +233,10 @@ public class ReservationService {
                         serviceId,
                         dateTime,
                         dateTime.plusMinutes(prsService.getDurationMinutes())
-                );
+                )
+                .stream()
+                .filter(reservation -> !ReservationStatus.CANCELLED.equals(reservation.getStatus()))
+                .collect(Collectors.toList());
 
         if (!existingReservations.isEmpty()) {
             throw new RuntimeException("Time slot not available");

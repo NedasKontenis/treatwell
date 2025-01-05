@@ -72,4 +72,10 @@ public class PRSServiceService {
                 .companyId(service.getCompany().getId())
                 .build();
     }
+
+    public PRSServiceDTO getServiceById(Long serviceId) {
+        PRSService prsService = serviceRepository.findById(serviceId).orElseThrow(() -> new ResourceNotFoundException("Service not found"));
+
+        return toDTO(prsService);
+    }
 }
