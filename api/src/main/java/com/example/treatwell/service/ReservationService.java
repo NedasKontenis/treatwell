@@ -4,6 +4,7 @@ import com.example.treatwell.exception.ResourceNotFoundException;
 import com.example.treatwell.model.*;
 import com.example.treatwell.model.dto.PRSServiceDTO;
 import com.example.treatwell.model.dto.ReservationDTO;
+import com.example.treatwell.model.dto.ReservationMappedWithServiceAndUser;
 import com.example.treatwell.model.dto.ReservationMappedWithServiceDTO;
 import com.example.treatwell.repository.ReservationRepository;
 import com.example.treatwell.repository.PRSServiceRepository;
@@ -179,15 +180,18 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-    public List<ReservationMappedWithServiceDTO> getServiceReservationsWithServiceData(Long serviceId) {
+    public List<ReservationMappedWithServiceAndUser> getServiceReservationsWithServiceAndUserData(Long serviceId) {
         List<ReservationDTO> reservations = reservationRepository.findByServiceId(serviceId).stream().map(this::mapToDTO).toList();
 
         return reservations.stream()
                 .map(reservation -> {
-                    PRSService service = serviceRepository.findById(reservation.getServiceId())
+                    PRSService prsService = serviceRepository.findById(reservation.getServiceId())
                             .orElseThrow(() -> new RuntimeException("Service not found"));
 
-                    return ReservationMappedWithServiceDTO.builder()
+                    User user = userRepository.findById(reservation.getUserId())
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+
+                    return ReservationMappedWithServiceAndUser.builder()
                             .id(reservation.getId())
                             .dateTime(reservation.getDateTime())
                             .notes(reservation.getNotes())
@@ -195,10 +199,14 @@ public class ReservationService {
                             .totalPrice(reservation.getTotalPrice())
                             .userId(reservation.getUserId())
                             .serviceId(reservation.getServiceId())
-                            .serviceName(service.getName())
-                            .serviceDescription(service.getDescription())
-                            .serviceDurationMinutes(service.getDurationMinutes())
-                            .serviceImageUrl(service.getImageUrl())
+                            .serviceName(prsService.getName())
+                            .serviceDescription(prsService.getDescription())
+                            .serviceDurationMinutes(prsService.getDurationMinutes())
+                            .serviceImageUrl(prsService.getImageUrl())
+                            .userEmail(user.getEmail())
+                            .userFirstName(user.getFirstName())
+                            .userLastName(user.getLastName())
+                            .userPhoneNumber(user.getPhoneNumber())
                             .build();
                 })
                 .collect(Collectors.toList());

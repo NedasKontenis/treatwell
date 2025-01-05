@@ -2,6 +2,7 @@ package com.example.treatwell.webControllers;
 
 import com.example.treatwell.model.ReservationStatus;
 import com.example.treatwell.model.dto.ReservationDTO;
+import com.example.treatwell.model.dto.ReservationMappedWithServiceAndUser;
 import com.example.treatwell.model.dto.ReservationMappedWithServiceDTO;
 import com.example.treatwell.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,8 @@ public class ReservationController {
     }
 
     @GetMapping("/service/{serviceId}")
-    public ResponseEntity<List<ReservationMappedWithServiceDTO>> getServiceReservations(@PathVariable Long serviceId) {
-        return ResponseEntity.ok(reservationService.getServiceReservationsWithServiceData(serviceId));
+    public ResponseEntity<List<ReservationMappedWithServiceAndUser>> getServiceReservations(@PathVariable Long serviceId) {
+        return ResponseEntity.ok(reservationService.getServiceReservationsWithServiceAndUserData(serviceId));
     }
 
     @PutMapping("/{id}")
