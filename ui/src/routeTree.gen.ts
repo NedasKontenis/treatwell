@@ -20,7 +20,6 @@ const RegisterLazyImport = createFileRoute('/register')()
 const ManageCompaniesLazyImport = createFileRoute('/manage-companies')()
 const LoginLazyImport = createFileRoute('/login')()
 const CreateNewCompanyLazyImport = createFileRoute('/create-new-company')()
-const CompaniesLazyImport = createFileRoute('/companies')()
 const IndexLazyImport = createFileRoute('/')()
 const ProviderCompanyIdLazyImport = createFileRoute('/provider/$companyId')()
 const CompanyDetailsCompanyIdLazyImport = createFileRoute(
@@ -57,12 +56,6 @@ const CreateNewCompanyLazyRoute = CreateNewCompanyLazyImport.update({
   import('./routes/create-new-company.lazy').then((d) => d.Route),
 )
 
-const CompaniesLazyRoute = CompaniesLazyImport.update({
-  id: '/companies',
-  path: '/companies',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/companies.lazy').then((d) => d.Route))
-
 const IndexLazyRoute = IndexLazyImport.update({
   id: '/',
   path: '/',
@@ -95,13 +88,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/companies': {
-      id: '/companies'
-      path: '/companies'
-      fullPath: '/companies'
-      preLoaderRoute: typeof CompaniesLazyImport
       parentRoute: typeof rootRoute
     }
     '/create-new-company': {
@@ -153,7 +139,6 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '/companies': typeof CompaniesLazyRoute
   '/create-new-company': typeof CreateNewCompanyLazyRoute
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
@@ -164,7 +149,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '/companies': typeof CompaniesLazyRoute
   '/create-new-company': typeof CreateNewCompanyLazyRoute
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
@@ -176,7 +160,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
-  '/companies': typeof CompaniesLazyRoute
   '/create-new-company': typeof CreateNewCompanyLazyRoute
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
@@ -189,7 +172,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/companies'
     | '/create-new-company'
     | '/login'
     | '/manage-companies'
@@ -199,7 +181,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/companies'
     | '/create-new-company'
     | '/login'
     | '/manage-companies'
@@ -209,7 +190,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/companies'
     | '/create-new-company'
     | '/login'
     | '/manage-companies'
@@ -221,7 +201,6 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
-  CompaniesLazyRoute: typeof CompaniesLazyRoute
   CreateNewCompanyLazyRoute: typeof CreateNewCompanyLazyRoute
   LoginLazyRoute: typeof LoginLazyRoute
   ManageCompaniesLazyRoute: typeof ManageCompaniesLazyRoute
@@ -232,7 +211,6 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  CompaniesLazyRoute: CompaniesLazyRoute,
   CreateNewCompanyLazyRoute: CreateNewCompanyLazyRoute,
   LoginLazyRoute: LoginLazyRoute,
   ManageCompaniesLazyRoute: ManageCompaniesLazyRoute,
@@ -252,7 +230,6 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/companies",
         "/create-new-company",
         "/login",
         "/manage-companies",
@@ -263,9 +240,6 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.lazy.tsx"
-    },
-    "/companies": {
-      "filePath": "companies.lazy.tsx"
     },
     "/create-new-company": {
       "filePath": "create-new-company.lazy.tsx"

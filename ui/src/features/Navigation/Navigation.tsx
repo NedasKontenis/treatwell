@@ -59,15 +59,6 @@ export const Navigation = () => {
             <ListItemText primary="Home" />
           </ListItem>
         </Link>
-
-        <Link to="/companies" style={{ textDecoration: 'none' }}>
-          <ListItem button>
-            <ListItemIcon>
-              <BusinessIcon />
-            </ListItemIcon>
-            <ListItemText primary="Companies" />
-          </ListItem>
-        </Link>
       </List>
 
       {isAuthenticated && isCompanyAdmin && (
