@@ -1,8 +1,13 @@
 package com.example.treatwell.service;
 
+import com.example.treatwell.exception.ResourceNotFoundException;
+import com.example.treatwell.model.Role;
 import com.example.treatwell.model.User;
 import com.example.treatwell.model.dto.UserDTO;
 import com.example.treatwell.repository.UserRepository;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,7 +58,31 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private UserDTO mapToDTO(User user) {
+    public UserDTO updateUser(Long id, User updatedUser) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.getEmail().equals(updatedUser.getEmail())
+                && userRepository.existsByEmail(updatedUser.getEmail())) {
+            throw new RuntimeException("Email already in use");
+        }
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setEmail(updatedUser.getEmail());
+        user.setRole(updatedUser.getRole());
+        user.setActive(updatedUser.isActive());
+        user.setPhoneNumber(updatedUser.getPhoneNumber());
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+
+        User savedUser = userRepository.save(user); // Save returns a User, not UserDTO
+
+        return mapToDTO(savedUser); // Convert to UserDTO before returning
+    }
+
+    public UserDTO mapToDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -63,4 +92,15 @@ public class UserService {
                 .isActive(user.isActive())
                 .build();
     }
+
+
+    public User toggleUserStatus(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setActive(!user.isActive());
+        return userRepository.save(user);
+    }
+
+
 }
