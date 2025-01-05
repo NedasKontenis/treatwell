@@ -19,6 +19,7 @@ import { useAuthStore } from '../../stores/loginStore';
 export const Navigation = () => {
   const { isAuthenticated, user, logout } = useAuthStore();
   const isCompanyAdmin = user?.role === 'COMPANY_ADMIN';
+  const isClient = user?.role === 'USER';
 
   return (
     <Box
@@ -58,17 +59,47 @@ export const Navigation = () => {
             <ListItemText primary="Home" />
           </ListItem>
         </Link>
+
+        {isClient && (
+          <Link
+            to="/my-reservations"
+            activeProps={{
+              style: {
+                backgroundColor: 'primary.main',
+                color: 'primary.contrastText',
+              },
+            }}
+            style={{ textDecoration: 'none' }}
+          >
+            <ListItem button>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="My Reservations" />
+            </ListItem>
+          </Link>
+        )}
       </List>
 
       {isAuthenticated && isCompanyAdmin && (
-        <Link to="/manage-companies" style={{ textDecoration: 'none' }}>
-          <ListItem button>
-            <ListItemIcon>
-              <AdminPanelSettings />
-            </ListItemIcon>
-            <ListItemText primary="Manage Companies" />
-          </ListItem>
-        </Link>
+        <>
+          <Link to="/manage-companies" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon>
+                <AdminPanelSettings />
+              </ListItemIcon>
+              <ListItemText primary="Manage Companies" />
+            </ListItem>
+          </Link>
+          <Link to="/company-reservations" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon>
+                <AdminPanelSettings />
+              </ListItemIcon>
+              <ListItemText primary="Company Reservations" />
+            </ListItem>
+          </Link>{' '}
+        </>
       )}
 
       <Divider sx={{ mt: 'auto' }} />

@@ -25,6 +25,7 @@ export const useServices = (companyId: string) => {
       );
       return data;
     },
+    enabled: !!companyId,
   });
 
   const createServiceMutation = useMutation({

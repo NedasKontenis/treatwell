@@ -17,9 +17,11 @@ import { Route as rootRoute } from './routes/__root'
 // Create Virtual Routes
 
 const RegisterLazyImport = createFileRoute('/register')()
+const MyReservationsLazyImport = createFileRoute('/my-reservations')()
 const ManageCompaniesLazyImport = createFileRoute('/manage-companies')()
 const LoginLazyImport = createFileRoute('/login')()
 const CreateNewCompanyLazyImport = createFileRoute('/create-new-company')()
+const CompanyReservationsLazyImport = createFileRoute('/company-reservations')()
 const IndexLazyImport = createFileRoute('/')()
 const ProviderCompanyIdLazyImport = createFileRoute('/provider/$companyId')()
 const CompanyDetailsCompanyIdLazyImport = createFileRoute(
@@ -33,6 +35,14 @@ const RegisterLazyRoute = RegisterLazyImport.update({
   path: '/register',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/register.lazy').then((d) => d.Route))
+
+const MyReservationsLazyRoute = MyReservationsLazyImport.update({
+  id: '/my-reservations',
+  path: '/my-reservations',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/my-reservations.lazy').then((d) => d.Route),
+)
 
 const ManageCompaniesLazyRoute = ManageCompaniesLazyImport.update({
   id: '/manage-companies',
@@ -54,6 +64,14 @@ const CreateNewCompanyLazyRoute = CreateNewCompanyLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/create-new-company.lazy').then((d) => d.Route),
+)
+
+const CompanyReservationsLazyRoute = CompanyReservationsLazyImport.update({
+  id: '/company-reservations',
+  path: '/company-reservations',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/company-reservations.lazy').then((d) => d.Route),
 )
 
 const IndexLazyRoute = IndexLazyImport.update({
@@ -90,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/company-reservations': {
+      id: '/company-reservations'
+      path: '/company-reservations'
+      fullPath: '/company-reservations'
+      preLoaderRoute: typeof CompanyReservationsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/create-new-company': {
       id: '/create-new-company'
       path: '/create-new-company'
@@ -109,6 +134,13 @@ declare module '@tanstack/react-router' {
       path: '/manage-companies'
       fullPath: '/manage-companies'
       preLoaderRoute: typeof ManageCompaniesLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/my-reservations': {
+      id: '/my-reservations'
+      path: '/my-reservations'
+      fullPath: '/my-reservations'
+      preLoaderRoute: typeof MyReservationsLazyImport
       parentRoute: typeof rootRoute
     }
     '/register': {
@@ -139,9 +171,11 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/company-reservations': typeof CompanyReservationsLazyRoute
   '/create-new-company': typeof CreateNewCompanyLazyRoute
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
+  '/my-reservations': typeof MyReservationsLazyRoute
   '/register': typeof RegisterLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
   '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
@@ -149,9 +183,11 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/company-reservations': typeof CompanyReservationsLazyRoute
   '/create-new-company': typeof CreateNewCompanyLazyRoute
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
+  '/my-reservations': typeof MyReservationsLazyRoute
   '/register': typeof RegisterLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
   '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
@@ -160,9 +196,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/company-reservations': typeof CompanyReservationsLazyRoute
   '/create-new-company': typeof CreateNewCompanyLazyRoute
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
+  '/my-reservations': typeof MyReservationsLazyRoute
   '/register': typeof RegisterLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
   '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
@@ -172,27 +210,33 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/company-reservations'
     | '/create-new-company'
     | '/login'
     | '/manage-companies'
+    | '/my-reservations'
     | '/register'
     | '/company-details/$companyId'
     | '/provider/$companyId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/company-reservations'
     | '/create-new-company'
     | '/login'
     | '/manage-companies'
+    | '/my-reservations'
     | '/register'
     | '/company-details/$companyId'
     | '/provider/$companyId'
   id:
     | '__root__'
     | '/'
+    | '/company-reservations'
     | '/create-new-company'
     | '/login'
     | '/manage-companies'
+    | '/my-reservations'
     | '/register'
     | '/company-details/$companyId'
     | '/provider/$companyId'
@@ -201,9 +245,11 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  CompanyReservationsLazyRoute: typeof CompanyReservationsLazyRoute
   CreateNewCompanyLazyRoute: typeof CreateNewCompanyLazyRoute
   LoginLazyRoute: typeof LoginLazyRoute
   ManageCompaniesLazyRoute: typeof ManageCompaniesLazyRoute
+  MyReservationsLazyRoute: typeof MyReservationsLazyRoute
   RegisterLazyRoute: typeof RegisterLazyRoute
   CompanyDetailsCompanyIdLazyRoute: typeof CompanyDetailsCompanyIdLazyRoute
   ProviderCompanyIdLazyRoute: typeof ProviderCompanyIdLazyRoute
@@ -211,9 +257,11 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  CompanyReservationsLazyRoute: CompanyReservationsLazyRoute,
   CreateNewCompanyLazyRoute: CreateNewCompanyLazyRoute,
   LoginLazyRoute: LoginLazyRoute,
   ManageCompaniesLazyRoute: ManageCompaniesLazyRoute,
+  MyReservationsLazyRoute: MyReservationsLazyRoute,
   RegisterLazyRoute: RegisterLazyRoute,
   CompanyDetailsCompanyIdLazyRoute: CompanyDetailsCompanyIdLazyRoute,
   ProviderCompanyIdLazyRoute: ProviderCompanyIdLazyRoute,
@@ -230,9 +278,11 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/company-reservations",
         "/create-new-company",
         "/login",
         "/manage-companies",
+        "/my-reservations",
         "/register",
         "/company-details/$companyId",
         "/provider/$companyId"
@@ -240,6 +290,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/company-reservations": {
+      "filePath": "company-reservations.lazy.tsx"
     },
     "/create-new-company": {
       "filePath": "create-new-company.lazy.tsx"
@@ -249,6 +302,9 @@ export const routeTree = rootRoute
     },
     "/manage-companies": {
       "filePath": "manage-companies.lazy.tsx"
+    },
+    "/my-reservations": {
+      "filePath": "my-reservations.lazy.tsx"
     },
     "/register": {
       "filePath": "register.lazy.tsx"
