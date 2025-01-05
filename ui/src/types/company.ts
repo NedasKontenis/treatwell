@@ -15,3 +15,16 @@ export interface Company {
     closeTime: string | null;
   }[];
 }
+
+export enum Category {
+  ALL = 'ALL',
+  BEAUTY = 'BEAUTY',
+  HEALTH = 'HEALTH',
+  FITNESS = 'FITNESS',
+  OTHER = 'OTHER',
+}
+
+export interface CompanyCategorySearch {
+  id: Category;
+  label: string;
+}

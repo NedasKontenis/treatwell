@@ -1,6 +1,8 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { useCompanies } from '../hooks/useCompanies';
 import { CompanyGrid } from '../components/CompanyGrid/CompanyGrid';
+import { Stack } from '@mui/material';
+import { SearchCompanies } from '../features/SearchCompanies/SearchCompanies';
 
 export const Route = createLazyFileRoute('/')({
   component: RouteComponent,
