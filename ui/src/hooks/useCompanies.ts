@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/api';
 import { useAuthStore } from '../stores/loginStore';
 import { Company } from '../types/company';
@@ -52,11 +52,19 @@ export const useCompany = (companyId: string) => {
   };
 };
 
-export const useCompanies = () => {
+export const useCompanies = (isApproved?: boolean, key?: string) => {
+  const searchParam = isApproved !== undefined && `?isApproved=${isApproved}`;
+
+  let url = '/companies';
+
+  if (searchParam) {
+    url = url + searchParam;
+  }
+
   const query = useQuery<Company[]>({
-    queryKey: ['companies'],
+    queryKey: [key || 'companies'],
     queryFn: async () => {
-      const { data } = await api.get('/companies');
+      const { data } = await api.get(url);
       return data;
     },
   });
@@ -67,4 +75,19 @@ export const useCompanies = () => {
     data: data as Company[],
     isLoading,
   };
+};
+
+export const useCompanyStatusUpdate = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, isApproved }) => {
+      return api.put(`/companies/status/${id}?isApproved=${isApproved}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['not-approved-companies', 'companies'],
+      });
+    },
+  });
 };

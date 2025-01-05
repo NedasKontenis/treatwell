@@ -14,6 +14,8 @@ export interface Company {
     openTime: string | null;
     closeTime: string | null;
   }[];
+  active: boolean;
+  submissionCancelled: boolean;
 }
 
 export enum Category {

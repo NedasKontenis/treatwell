@@ -20,6 +20,7 @@ export const Navigation = () => {
   const { isAuthenticated, user, logout } = useAuthStore();
   const isCompanyAdmin = user?.role === 'COMPANY_ADMIN';
   const isClient = user?.role === 'USER';
+  const isSystemAdmin = user?.role === 'SYSTEM_ADMIN';
 
   return (
     <Box
@@ -102,9 +103,19 @@ export const Navigation = () => {
         </>
       )}
 
+      {isSystemAdmin && (
+        <Link to="/company-approval" style={{ textDecoration: 'none' }}>
+          <ListItem button>
+            <ListItemIcon>
+              <AdminPanelSettings />
+            </ListItemIcon>
+            <ListItemText primary="Company Approval" />
+          </ListItem>
+        </Link>
+      )}
+
       <Divider sx={{ mt: 'auto' }} />
 
-      {/* Authentication Section */}
       <List>
         {!isAuthenticated ? (
           <>

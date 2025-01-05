@@ -9,7 +9,7 @@ export const Route = createLazyFileRoute('/')({
 });
 
 function RouteComponent() {
-  const { data, isLoading } = useCompanies();
+  const { data, isLoading } = useCompanies(true);
 
   if (isLoading) {
     return <div>Loading...</div>;
