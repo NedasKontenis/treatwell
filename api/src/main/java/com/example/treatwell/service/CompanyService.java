@@ -31,10 +31,11 @@ public class CompanyService {
                 .phoneNumber(companyDTO.getPhoneNumber())
                 .email(companyDTO.getEmail())
                 .owner(owner)
-                .isActive(true)
+                .isActive(false)
                 .logoUrl(companyDTO.getLogoUrl())
                 .workingHours(companyDTO.getWorkingHours())
                 .category(ServiceCategory.valueOf(companyDTO.getCategory()))
+                .isSubmissionCancelled(false)
                 .build();
 
         return mapToDTO(companyRepository.save(company));
@@ -46,10 +47,25 @@ public class CompanyService {
                 .collect(Collectors.toList());
     }
 
-    public List<CompanyDTO> getCompanies() {
+    public List<CompanyDTO> getCompanies(Boolean isApproved) {
         return companyRepository.findAll().stream()
+                .filter(company -> isApproved == null || company.isActive() == isApproved)
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public CompanyDTO updateCompanyStatus(Long id, Boolean isApproved) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + id));
+
+        company.setActive(isApproved);
+
+        if (Boolean.FALSE.equals(isApproved)) {
+            company.setSubmissionCancelled(true);
+        }
+
+        Company updatedCompany = companyRepository.save(company);
+        return companyMapper.toDTO(updatedCompany);
     }
 
     private CompanyDTO mapToDTO(Company company) {
@@ -65,6 +81,8 @@ public class CompanyService {
                 .logoUrl(company.getLogoUrl())
                 .workingHours(company.getWorkingHours())
                 .category(company.getCategory().name())
+                .isActive(company.isActive())
+                .isSubmissionCancelled(company.isSubmissionCancelled())
                 .build();
     }
 

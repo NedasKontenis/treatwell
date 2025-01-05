@@ -21,13 +21,19 @@ public class CompanyController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CompanyDTO>> getCompanies() {
-        return ResponseEntity.ok(companyService.getCompanies());
+    public ResponseEntity<List<CompanyDTO>> getCompanies(
+            @RequestParam(required = false) Boolean isApproved) {
+        return ResponseEntity.ok(companyService.getCompanies(isApproved));
     }
 
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<List<CompanyDTO>> getCompaniesByOwner(@PathVariable Long ownerId) {
         return ResponseEntity.ok(companyService.getCompaniesByOwner(ownerId));
+    }
+
+    @PutMapping("/status/{id}")
+    public ResponseEntity<CompanyDTO> updateCompanyStatus(@PathVariable Long id, @RequestParam Boolean isApproved) {
+        return ResponseEntity.ok(companyService.updateCompanyStatus(id, isApproved));
     }
 
     @PutMapping("/{id}")

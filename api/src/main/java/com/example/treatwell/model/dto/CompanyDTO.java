@@ -24,4 +24,6 @@ public class CompanyDTO {
     private String logoUrl;
     private List<WorkingHours> workingHours;
     private String category;
+    private boolean isActive;
+    private boolean isSubmissionCancelled;
 }

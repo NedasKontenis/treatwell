@@ -28,7 +28,9 @@ public class Company {
     private String address;
     private String phoneNumber;
     private String email;
-    private boolean isActive = true;
+
+    // isActive false by default, this requires System Admin to approve the company. While isActive false, company only visible to Company Admin.
+    private boolean isActive = false;
 
     @Column(name = "logo_url")
     private String logoUrl;
@@ -46,4 +48,6 @@ public class Company {
 
     @Enumerated(EnumType.STRING)
     private ServiceCategory category;
+
+    private boolean isSubmissionCancelled = false;
 }
