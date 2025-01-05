@@ -9,7 +9,6 @@ import {
   Typography,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import BusinessIcon from '@mui/icons-material/Business';
 import LoginIcon from '@mui/icons-material/Login';
 import AdminPanelSettings from '@mui/icons-material/AdminPanelSettings';
 import LogoutIcon from '@mui/icons-material/ExitToApp';
