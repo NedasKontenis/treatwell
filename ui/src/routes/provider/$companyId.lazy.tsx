@@ -51,7 +51,7 @@ function PublicCompanyDetails() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['availableSlots', selectedService?.id, selectedDate],
+        queryKey: ['availableSlots'],
       });
     },
   });
