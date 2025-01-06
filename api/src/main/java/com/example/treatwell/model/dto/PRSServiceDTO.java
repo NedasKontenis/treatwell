@@ -17,4 +17,6 @@ public class PRSServiceDTO {
     private Integer durationMinutes;
     private Long companyId;
     private String imageUrl;
+    private Double averageRating;
+    private Integer totalRatings;
 }

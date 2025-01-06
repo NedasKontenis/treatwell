@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "services")
 @Data
@@ -30,4 +32,13 @@ public class PRSService {
     private Company company;
 
     private String imageUrl;
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    private List<ServiceRating> ratings;
+
+    @Column
+    private Double averageRating;
+
+    @Column
+    private Integer totalRatings;
 }

@@ -70,6 +70,8 @@ public class PRSServiceService {
                 .price(service.getPrice())
                 .durationMinutes(service.getDurationMinutes())
                 .companyId(service.getCompany().getId())
+                .averageRating(service.getAverageRating())
+                .totalRatings(service.getTotalRatings())
                 .build();
     }
 

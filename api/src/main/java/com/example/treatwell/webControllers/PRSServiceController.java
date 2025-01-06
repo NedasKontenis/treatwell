@@ -1,8 +1,12 @@
 package com.example.treatwell.webControllers;
 
+import com.example.treatwell.model.dto.CreateServiceRatingDTO;
 import com.example.treatwell.model.dto.PRSServiceDTO;
+import com.example.treatwell.model.dto.ServiceRatingDTO;
+import com.example.treatwell.model.dto.UpdateServiceRatingDTO;
 import com.example.treatwell.service.PRSServiceService;
 import com.example.treatwell.service.ReservationService;
+import com.example.treatwell.service.ServiceRatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,7 @@ import java.util.List;
 public class PRSServiceController {
     private final PRSServiceService serviceService;
     private final ReservationService reservationService;
+    private final ServiceRatingService ratingService;
 
     @GetMapping("/{serviceId}/available-slots")
     public ResponseEntity<List<LocalDateTime>> getAvailableSlots(
@@ -38,9 +43,27 @@ public class PRSServiceController {
         return ResponseEntity.ok(serviceService.getServicesByCompany(companyId));
     }
 
+    @GetMapping("/{serviceId}/ratings")
+    public ResponseEntity<List<ServiceRatingDTO>> getServiceRatings(@PathVariable Long serviceId) {
+        return ResponseEntity.ok(ratingService.getServiceRatings(serviceId));
+    }
+
+    @GetMapping("/{serviceId}/ratings/reservation/{reservationId}")
+    public ResponseEntity<ServiceRatingDTO> getServiceRatingByReservation(@PathVariable Long serviceId, @PathVariable Long reservationId) {
+        return ResponseEntity.ok(ratingService.getServiceRatingByReservation(serviceId, reservationId));
+    }
+
     @PostMapping
     public ResponseEntity<PRSServiceDTO> createService(@RequestBody PRSServiceDTO serviceDTO) {
         return ResponseEntity.ok(serviceService.createService(serviceDTO));
+    }
+
+    @PostMapping("/{serviceId}/ratings")
+    public ResponseEntity<ServiceRatingDTO> rateService(
+            @PathVariable Long serviceId,
+            @RequestBody CreateServiceRatingDTO ratingDTO) {
+        ratingDTO.setServiceId(serviceId);
+        return ResponseEntity.ok(ratingService.createRating(ratingDTO));
     }
 
     @PutMapping("/{id}")
@@ -49,6 +72,14 @@ public class PRSServiceController {
             @RequestBody PRSServiceDTO serviceDTO
     ) {
         return ResponseEntity.ok(serviceService.updateService(id, serviceDTO));
+    }
+
+    @PutMapping("/{serviceId}/ratings/{reservationId}")
+    public ResponseEntity<ServiceRatingDTO> updateRating(
+            @PathVariable Long serviceId,
+            @PathVariable Long reservationId,
+            @RequestBody UpdateServiceRatingDTO ratingDTO) {
+        return ResponseEntity.ok(ratingService.updateRating(serviceId, reservationId, ratingDTO));
     }
 
     @DeleteMapping("/{id}")
