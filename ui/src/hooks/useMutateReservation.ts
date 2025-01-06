@@ -11,6 +11,9 @@ export const useReservation = () => {
       queryClient.invalidateQueries({
         queryKey: ['service-reservations'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['my-reservations'],
+      });
     },
   });
 

@@ -12,6 +12,8 @@ export type ServiceDTO = {
   companyId: number;
   isActive: boolean;
   imageUrl?: string;
+  averageRating: number | null;
+  totalRatings: number | null;
 };
 
 export const useServices = (companyId: string) => {

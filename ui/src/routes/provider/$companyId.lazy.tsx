@@ -10,7 +10,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { Clock, MapPin } from 'lucide-react';
+import { Clock, MapPin, Star } from 'lucide-react';
 import { ServiceDTO, useServices } from '../../hooks/useServices';
 import { useState } from 'react';
 import { useAvailableSlots } from '../../hooks/useAvailableSlots';
@@ -52,6 +52,9 @@ function PublicCompanyDetails() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['availableSlots'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['my-reservations'],
       });
     },
   });
@@ -225,6 +228,20 @@ function PublicCompanyDetails() {
                             <Clock size={16} />
                             <Typography variant="body2">
                               {service.durationMinutes} minutes
+                            </Typography>
+                          </Box>
+
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                            }}
+                          >
+                            <Star size={16} />
+                            <Typography variant="body2">
+                              <strong>{service.averageRating ?? 0}</strong> (
+                              {service.totalRatings ?? 0})
                             </Typography>
                           </Box>
                         </Box>
