@@ -94,7 +94,6 @@ export const ServicesManagement = ({ companyId }: string) => {
               <TableCell>Name</TableCell>
               <TableCell>Duration</TableCell>
               <TableCell>Price</TableCell>
-              <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -120,22 +119,6 @@ export const ServicesManagement = ({ companyId }: string) => {
                 </TableCell>
                 <TableCell>{service.durationMinutes} min</TableCell>
                 <TableCell>€{service.price.toFixed(2)}</TableCell>
-                <TableCell>
-                  <Box
-                    sx={{
-                      bgcolor: service.isActive
-                        ? 'success.light'
-                        : 'error.light',
-                      color: 'white',
-                      py: 0.5,
-                      px: 1,
-                      borderRadius: 1,
-                      display: 'inline-block',
-                    }}
-                  >
-                    {service.isActive ? 'Active' : 'Inactive'}
-                  </Box>
-                </TableCell>
                 <TableCell>
                   <IconButton
                     onClick={() => handleEditService(service)}
