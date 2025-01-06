@@ -162,10 +162,16 @@ export const UserManagement = () => {
 
 
                                 <TableCell>
-                                    <Switch
-                                        checked={user.isActive}
-                                        onChange={() => toggleUserStatus(user)}
-                                    />
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Switch
+                                            checked={user.isActive}
+                                            onChange={() => toggleUserStatus(user)}
+                                            color="primary"
+                                        />
+                                        <Typography variant="body2">
+                                            {user.isActive ? 'Active' : 'Not Active'}
+                                        </Typography>
+                                    </Box>
                                 </TableCell>
                                 <TableCell>
                                     <IconButton
