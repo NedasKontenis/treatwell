@@ -35,4 +35,13 @@ public class User {
     public String getFullName() {
         return firstName + " " + lastName;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        this.isActive = active;
+    }
+
 }

@@ -35,10 +35,27 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    public ResponseEntity<UserDTO> editUser(@PathVariable Long id, @RequestBody User user) {
+        UserDTO updatedUser = userService.updateUser(id, user);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{id}/toggle-status")
+    public ResponseEntity<UserDTO> toggleUserStatus(@PathVariable Long id) {
+        User user = userService.toggleUserStatus(id);
+        return ResponseEntity.ok(userService.mapToDTO(user));
+    }
+
+
+
 }

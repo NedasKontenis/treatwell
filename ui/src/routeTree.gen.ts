@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 
 // Create Virtual Routes
 
+const UsermanagementLazyImport = createFileRoute('/usermanagement')()
 const RegisterLazyImport = createFileRoute('/register')()
 const ManageCompaniesLazyImport = createFileRoute('/manage-companies')()
 const LoginLazyImport = createFileRoute('/login')()
@@ -28,6 +29,14 @@ const CompanyDetailsCompanyIdLazyImport = createFileRoute(
 )()
 
 // Create/Update Routes
+
+const UsermanagementLazyRoute = UsermanagementLazyImport.update({
+  id: '/usermanagement',
+  path: '/usermanagement',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/usermanagement.lazy').then((d) => d.Route),
+)
 
 const RegisterLazyRoute = RegisterLazyImport.update({
   id: '/register',
@@ -132,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterLazyImport
       parentRoute: typeof rootRoute
     }
+    '/usermanagement': {
+      id: '/usermanagement'
+      path: '/usermanagement'
+      fullPath: '/usermanagement'
+      preLoaderRoute: typeof UsermanagementLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/company-details/$companyId': {
       id: '/company-details/$companyId'
       path: '/company-details/$companyId'
@@ -158,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
+  '/usermanagement': typeof UsermanagementLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
   '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
 }
@@ -169,6 +186,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
+  '/usermanagement': typeof UsermanagementLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
   '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
 }
@@ -181,6 +199,7 @@ export interface FileRoutesById {
   '/login': typeof LoginLazyRoute
   '/manage-companies': typeof ManageCompaniesLazyRoute
   '/register': typeof RegisterLazyRoute
+  '/usermanagement': typeof UsermanagementLazyRoute
   '/company-details/$companyId': typeof CompanyDetailsCompanyIdLazyRoute
   '/provider/$companyId': typeof ProviderCompanyIdLazyRoute
 }
@@ -194,6 +213,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-companies'
     | '/register'
+    | '/usermanagement'
     | '/company-details/$companyId'
     | '/provider/$companyId'
   fileRoutesByTo: FileRoutesByTo
@@ -204,6 +224,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-companies'
     | '/register'
+    | '/usermanagement'
     | '/company-details/$companyId'
     | '/provider/$companyId'
   id:
@@ -214,6 +235,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-companies'
     | '/register'
+    | '/usermanagement'
     | '/company-details/$companyId'
     | '/provider/$companyId'
   fileRoutesById: FileRoutesById
@@ -226,6 +248,7 @@ export interface RootRouteChildren {
   LoginLazyRoute: typeof LoginLazyRoute
   ManageCompaniesLazyRoute: typeof ManageCompaniesLazyRoute
   RegisterLazyRoute: typeof RegisterLazyRoute
+  UsermanagementLazyRoute: typeof UsermanagementLazyRoute
   CompanyDetailsCompanyIdLazyRoute: typeof CompanyDetailsCompanyIdLazyRoute
   ProviderCompanyIdLazyRoute: typeof ProviderCompanyIdLazyRoute
 }
@@ -237,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginLazyRoute: LoginLazyRoute,
   ManageCompaniesLazyRoute: ManageCompaniesLazyRoute,
   RegisterLazyRoute: RegisterLazyRoute,
+  UsermanagementLazyRoute: UsermanagementLazyRoute,
   CompanyDetailsCompanyIdLazyRoute: CompanyDetailsCompanyIdLazyRoute,
   ProviderCompanyIdLazyRoute: ProviderCompanyIdLazyRoute,
 }
@@ -257,6 +281,7 @@ export const routeTree = rootRoute
         "/login",
         "/manage-companies",
         "/register",
+        "/usermanagement",
         "/company-details/$companyId",
         "/provider/$companyId"
       ]
@@ -278,6 +303,9 @@ export const routeTree = rootRoute
     },
     "/register": {
       "filePath": "register.lazy.tsx"
+    },
+    "/usermanagement": {
+      "filePath": "usermanagement.lazy.tsx"
     },
     "/company-details/$companyId": {
       "filePath": "company-details/$companyId.lazy.tsx"

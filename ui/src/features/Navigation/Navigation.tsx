@@ -20,7 +20,7 @@ import { useAuthStore } from '../../stores/loginStore';
 export const Navigation = () => {
   const { isAuthenticated, user, logout } = useAuthStore();
   const isCompanyAdmin = user?.role === 'COMPANY_ADMIN';
-
+  const isSystemAdmin = user?.role === 'SYSTEM_ADMIN';
   return (
     <Box
       sx={{
@@ -79,6 +79,17 @@ export const Navigation = () => {
             <ListItemText primary="Manage Companies" />
           </ListItem>
         </Link>
+      )}
+
+      {isAuthenticated && isSystemAdmin && (
+          <Link to="/usermanagement" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon>
+                <AdminPanelSettings />
+              </ListItemIcon>
+              <ListItemText primary="Manage users" />
+            </ListItem>
+          </Link>
       )}
 
       <Divider sx={{ mt: 'auto' }} />
