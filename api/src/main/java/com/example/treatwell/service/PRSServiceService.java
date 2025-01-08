@@ -3,7 +3,6 @@ package com.example.treatwell.service;
 import com.example.treatwell.exception.ResourceNotFoundException;
 import com.example.treatwell.model.Company;
 import com.example.treatwell.model.PRSService;
-import com.example.treatwell.model.ServiceCategory;
 import com.example.treatwell.model.dto.PRSServiceDTO;
 import com.example.treatwell.repository.CompanyRepository;
 import com.example.treatwell.repository.PRSServiceRepository;

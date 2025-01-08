@@ -1,7 +1,9 @@
 package com.example.treatwell.webControllers;
 
 import com.example.treatwell.model.dto.CompanyDTO;
+import com.example.treatwell.model.dto.ReportDTO;
 import com.example.treatwell.service.CompanyService;
+import com.example.treatwell.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,16 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CompanyController {
     private final CompanyService companyService;
+    private final ReportService reportService;
 
     @PostMapping
     public ResponseEntity<CompanyDTO> createCompany(@RequestBody CompanyDTO companyDTO) {
         return ResponseEntity.ok(companyService.createCompany(companyDTO));
+    }
+
+    @GetMapping("/{id}/generate-report")
+    public ResponseEntity<ReportDTO> getReport(@PathVariable Long id) {
+        return ResponseEntity.ok(reportService.generateReport(id));
     }
 
     @GetMapping
